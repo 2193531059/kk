@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:padding="5dp"
+                android:background="#ffffff"
+                android:layout_height="wrap_content">
+
+    <ImageView
+            android:id="@+id/icv_comment_item"
+            android:src="@drawable/def_head"
+            android:layout_width="35dp"
+            android:layout_height="35dp"/>
+
+    <RelativeLayout
+            android:id="@+id/content_part"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/icv_comment_item"
+            android:layout_toEndOf="@+id/icv_comment_item">
+
+        <TextView
+                android:id="@+id/tv_comment_name"
+                android:textColor="#969696"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="匿名用户"
+                android:textSize="14sp"/>
+
+        <TextView
+                android:id="@+id/tv_comment_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_comment_name"
+                android:gravity="center|left"
+                android:textColor="#969696"/>
+
+    </RelativeLayout>
+
+    <View
+            android:background="#EeEeEe"
+            android:layout_marginLeft="50dp"
+            android:layout_below="@id/content_part"
+            android:layout_marginTop="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+</RelativeLayout>

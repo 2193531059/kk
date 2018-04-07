@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.AppBarLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:theme="@style/AppTheme.AppBarOverlay"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#0183E5"
+        app:contentInsetLeft="0dp"
+        android:gravity="center"
+        app:contentInsetStart="0dp"
+        app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        <TextView
+            android:id="@+id/tv_title_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/app_video"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:visibility="gone"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/tablayout_master"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/app_master"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:layout_gravity="center"/>
+
+        <TextView
+            android:id="@+id/tv_title_me"
+            android:text="@string/app_me"
+            android:textColor="#ffffff"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </android.support.v7.widget.Toolbar>
+
+</android.support.design.widget.AppBarLayout>

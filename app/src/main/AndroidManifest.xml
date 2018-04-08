@@ -16,7 +16,7 @@
         android:theme="@style/Theme.Design.NoActionBar">
         <activity
             android:name=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -39,7 +39,20 @@
             <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             <!-- </intent-filter> -->
         </activity>
-        <activity android:name=".SeaHotSpotInfoActivity"
+        <activity
+            android:name=".SeaHotSpotInfoActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".sea_knowledge.SeaSecretActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".sea_knowledge.SeaZoologyActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".sea_knowledge.SeaResouceActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".sea_knowledge.SeaDefenceActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".sea_knowledge.OceanSailingActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".sea_knowledge.CoastalTourismActivity"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

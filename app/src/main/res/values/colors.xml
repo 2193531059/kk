@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="background_tab_pressed">#6633B5E5</color>
+    <drawable name="write">#FFFFFF</drawable>
+    <drawable name="gray">#EAEAEA</drawable>
+    <drawable name="gray1">#FAFAFA</drawable>
 </resources>

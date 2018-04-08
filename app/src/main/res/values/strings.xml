@@ -33,4 +33,10 @@
     <string name="nick">昵称：</string>
     <string name="phone_store">电话号码：</string>
     <string name="video_info">视频详情：</string>
+    <string name="sea_secret">海洋奥秘</string>
+    <string name="sea_zoology">海洋生态</string>
+    <string name="sea_resource">海洋资源</string>
+    <string name="sea_defence">海洋国防</string>
+    <string name="ocean_sailing">远洋航海</string>
+    <string name="coastal_tourism">滨海旅游</string>
 </resources>

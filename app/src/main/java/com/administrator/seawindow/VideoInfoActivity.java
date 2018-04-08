@@ -34,9 +34,10 @@ public class VideoInfoActivity extends Activity {
         });
 
         Bundle bundle = getIntent().getBundleExtra("bundle");
-        VideoBean bean = (VideoBean) bundle.getSerializable("bean");
-        path = bean.getVideo();
-        title = bean.getTitle();
+        if (bundle != null) {
+            path = bundle.getString("url");
+            title = bundle.getString("title");
+        }
 
         gsyVideoPlayer = findViewById(R.id.ijkplayer);
         play_part = findViewById(R.id.play_view);

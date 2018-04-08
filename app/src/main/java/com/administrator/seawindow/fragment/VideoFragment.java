@@ -62,8 +62,11 @@ public class VideoFragment extends Fragment  {
             public void onVideoClick(int position) {
                 List<VideoBean> data = mAdapter.getmData();
                 VideoBean bean = data.get(position);
+                String url = bean.getVideo();
+                String title = bean.getTitle();
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("bean", bean);
+                bundle.putString("url", url);
+                bundle.putString("title", title);
                 OpenActivityUtil.openActivity(getActivity(), bundle, VideoInfoActivity.class);
             }
         });

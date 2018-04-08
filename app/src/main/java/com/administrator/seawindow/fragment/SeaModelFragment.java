@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
@@ -26,6 +27,7 @@ import com.administrator.seawindow.bean.SeaModelBean;
 import com.administrator.seawindow.utils.ConstantPool;
 import com.administrator.seawindow.utils.HttpUtils;
 import com.administrator.seawindow.utils.OpenActivityUtil;
+import com.administrator.seawindow.view.VpSwipeRefreshLayout;
 
 import org.w3c.dom.Text;
 
@@ -42,6 +44,7 @@ import okhttp3.Response;
 public class SeaModelFragment extends Fragment {
     private static final String TAG = "SeaModelFragment";
     private RecyclerView gridview_model;
+    private VpSwipeRefreshLayout vpSwipeRefreshLayout;
     private SeaModelRecyclerAdapter mAdapter;
     private List<SeaModelBean> mList;
     private final int GET_SEAMODEL_SUCCESS = 0;
@@ -80,11 +83,24 @@ public class SeaModelFragment extends Fragment {
     }
 
     private void initView(View view){
+        vpSwipeRefreshLayout = view.findViewById(R.id.sr_swpierefresh);
         gridview_model = view.findViewById(R.id.gridview_model);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         gridview_model.setLayoutManager(linearLayoutManager);
         gridview_model.setHasFixedSize(true);
+
+        vpSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new android.os.Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        vpSwipeRefreshLayout.setRefreshing(false);
+                    }
+                }, 5000);
+            }
+        });
     }
 
     private void initData(){

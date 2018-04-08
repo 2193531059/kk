@@ -34,7 +34,7 @@ public class SeaModelRecyclerAdapter extends RecyclerView.Adapter{
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.recycler_item_news, parent, false);
+        View itemView = mInflater.inflate(R.layout.recycler_item_model, parent, false);
         return new NewsViewHolder(itemView);
     }
 
@@ -42,8 +42,9 @@ public class SeaModelRecyclerAdapter extends RecyclerView.Adapter{
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         SeaModelBean modelBean = mData.get(position);
         String title = modelBean.getTitle();
-//        Picasso.with(mContext).load(picUrl).into(((NewsViewHolder)holder).newsCover);
-        ((NewsViewHolder)holder).newsTitle.setText(title);
+        String text = modelBean.getText();
+        ((NewsViewHolder)holder).modelTitle.setText(title);
+        ((NewsViewHolder)holder).modelText.setText(text);
         ((NewsViewHolder)holder).view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,15 +64,14 @@ public class SeaModelRecyclerAdapter extends RecyclerView.Adapter{
     }
 
     class NewsViewHolder extends RecyclerView.ViewHolder{
-        private ImageView newsCover;
-        private TextView newsTitle;
+        private TextView modelTitle, modelText;
         private View view;
 
         public NewsViewHolder(View itemView) {
             super(itemView);
             view = itemView;
-            newsCover = (ImageView) itemView.findViewById(R.id.iv_newsImage);
-            newsTitle = (TextView) itemView.findViewById(R.id.tv_news_describe);
+            modelTitle = itemView.findViewById(R.id.tv_model_title);
+            modelText = itemView.findViewById(R.id.tv_model_text);
         }
     }
 }

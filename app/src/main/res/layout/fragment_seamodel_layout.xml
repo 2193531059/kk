@@ -3,9 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/gridview_model"
+    <com.administrator.seawindow.view.VpSwipeRefreshLayout
+        android:id="@+id/sr_swpierefresh"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/gridview_model"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </com.administrator.seawindow.view.VpSwipeRefreshLayout>
 
 </LinearLayout>

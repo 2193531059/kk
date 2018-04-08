@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
@@ -23,6 +24,7 @@ import com.administrator.seawindow.bean.SeaHotSpotBean;
 import com.administrator.seawindow.utils.ConstantPool;
 import com.administrator.seawindow.utils.HttpUtils;
 import com.administrator.seawindow.utils.OpenActivityUtil;
+import com.administrator.seawindow.view.VpSwipeRefreshLayout;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -44,6 +46,7 @@ public class SeaHotSpotFragment extends Fragment {
     private RecyclerView gridview_news;
     private SeaHotSpotRecyclerAdapter mAdapter;
     private List<SeaHotSpotBean> mList;
+    private SwipeRefreshLayout sr_swpierefresh;
     private final int GET_HOT_SPOT_SUCCESS = 0;
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
@@ -84,6 +87,7 @@ public class SeaHotSpotFragment extends Fragment {
 
     private void initView(View view){
         gridview_news = view.findViewById(R.id.gridview_news);
+        sr_swpierefresh = view.findViewById(R.id.sr_swpierefresh);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         gridview_news.setLayoutManager(linearLayoutManager);
@@ -91,7 +95,12 @@ public class SeaHotSpotFragment extends Fragment {
     }
 
     private void setListener(){
-
+        sr_swpierefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                sr_swpierefresh.setRefreshing(true);
+            }
+        });
     }
 
     @SuppressLint("StaticFieldLeak")

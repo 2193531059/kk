@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.administrator.seawindow.R;
+import com.administrator.seawindow.adapter.SeaActivityRecyclerAdapter;
 import com.administrator.seawindow.bean.ActivityBean;
 import com.administrator.seawindow.view.VpSwipeRefreshLayout;
 
@@ -27,6 +28,7 @@ public class SeaActivityFragment extends Fragment {
     private RecyclerView gridview_activity;
     private List<ActivityBean> mList;
     private VpSwipeRefreshLayout vpSwipeRefreshLayout;
+    private SeaActivityRecyclerAdapter mAdapter;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

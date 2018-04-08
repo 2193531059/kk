@@ -34,7 +34,7 @@ public class SeaActivityRecyclerAdapter extends RecyclerView.Adapter{
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = mInflater.inflate(R.layout.recycler_item_news, parent, false);
+        View itemView = mInflater.inflate(R.layout.recycler_item_activity, parent, false);
         return new NewsViewHolder(itemView);
     }
 

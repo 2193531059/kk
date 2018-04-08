@@ -14,4 +14,10 @@
         android:layout_height="50dp"
         app:titleText="@string/sea_zoology"/>
 
+    <TextView
+        android:id="@+id/text"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </LinearLayout>

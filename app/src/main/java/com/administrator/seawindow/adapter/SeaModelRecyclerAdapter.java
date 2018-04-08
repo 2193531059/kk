@@ -32,6 +32,10 @@ public class SeaModelRecyclerAdapter extends RecyclerView.Adapter{
         this.mNewsClickListener = mNewsClickListener;
     }
 
+    public List<SeaModelBean> getmData(){
+        return mData;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.recycler_item_model, parent, false);

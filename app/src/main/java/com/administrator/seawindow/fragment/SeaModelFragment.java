@@ -29,6 +29,9 @@ import com.administrator.seawindow.utils.HttpUtils;
 import com.administrator.seawindow.utils.OpenActivityUtil;
 import com.administrator.seawindow.view.VpSwipeRefreshLayout;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.w3c.dom.Text;
 
 import java.io.IOException;
@@ -44,7 +47,7 @@ import okhttp3.Response;
 public class SeaModelFragment extends Fragment {
     private static final String TAG = "SeaModelFragment";
     private RecyclerView gridview_model;
-    private VpSwipeRefreshLayout vpSwipeRefreshLayout;
+    private SwipeRefreshLayout sr_swpierefresh;
     private SeaModelRecyclerAdapter mAdapter;
     private List<SeaModelBean> mList;
     private final int GET_SEAMODEL_SUCCESS = 0;
@@ -83,22 +86,23 @@ public class SeaModelFragment extends Fragment {
     }
 
     private void initView(View view){
-        vpSwipeRefreshLayout = view.findViewById(R.id.sr_swpierefresh);
+        sr_swpierefresh = view.findViewById(R.id.sr_swpierefresh);
         gridview_model = view.findViewById(R.id.gridview_model);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
         gridview_model.setLayoutManager(linearLayoutManager);
         gridview_model.setHasFixedSize(true);
 
-        vpSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        sr_swpierefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new android.os.Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        vpSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 5000);
+                if (mAdapter == null) {
+                    sr_swpierefresh.setRefreshing(false);
+                    return;
+                }
+                mList.clear();
+                mAdapter.getmData().clear();
+                getSeaModels();
             }
         });
     }
@@ -118,7 +122,7 @@ public class SeaModelFragment extends Fragment {
                 try {
                     if (response != null) {
                         json = response.body().string();
-                        Log.e(TAG, "doInBackground: json = " + json);
+                        Log.e(TAG, "doInBackground:getSeaModels json = " + json);
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "doInBackground: e = " + e);
@@ -130,8 +134,29 @@ public class SeaModelFragment extends Fragment {
             @Override
             protected void onPostExecute(Void aVoid) {
                 if (!TextUtils.isEmpty(json)) {
-
+                    try {
+                        JSONArray array = new JSONArray(json);
+                        for(int i = 0;i<array.length();i++){
+                            JSONObject obj = array.getJSONObject(i);
+                            SeaModelBean bean = new SeaModelBean();
+                            bean.setId(obj.optInt("id"));
+                            bean.setText(obj.optString("text"));
+                            bean.setTitle(obj.optString("title"));
+                            bean.setVideo(obj.optString("video"));
+                            mList.add(bean);
+                        }
+                        Message msg = mHandler.obtainMessage(GET_SEAMODEL_SUCCESS);
+                        mHandler.sendMessage(msg);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        sr_swpierefresh.setRefreshing(false);
+                    }
+                });
             }
         }.execute();
     }

@@ -36,6 +36,7 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
     private MyTextWatcher mTextWatcher;
 
     private final int REGISTER_SUCCESS = 0;
+    private final int REGISTER_FAILED = 1;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
@@ -43,8 +44,13 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case REGISTER_SUCCESS:
+                    PreferenceUtil.setLOGINSTATE(RegisterActivity.this,true);
                     OpenActivityUtil.openActivity(RegisterActivity.this, MainActivity.class);
                     finish();
+                    break;
+                case REGISTER_FAILED:
+                    PreferenceUtil.setLOGINSTATE(RegisterActivity.this,false);
+                    ToastUtil.show(RegisterActivity.this, "手机号码已注册！");
                     break;
             }
         }
@@ -93,13 +99,6 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
                     if(response != null){
                         json = response.body().string();
                         Log.e(TAG, "doInBackground:register json = " + json);
-                        HashMap<String,String> map = new HashMap<>();
-                        map.put("nickName", userName);
-                        map.put("phoneNumber", phoneNum);
-                        map.put("password", password);
-                        PreferenceUtil.setUserInfo(RegisterActivity.this,map);
-                        Message msg = mHandler.obtainMessage(REGISTER_SUCCESS);
-                        mHandler.sendMessage(msg);
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "doInBackground:register e = " + e);
@@ -111,7 +110,24 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
             @Override
             protected void onPostExecute(Void aVoid) {
                 if (!TextUtils.isEmpty(json)) {
-
+                    try {
+                        JSONObject obj = new JSONObject(json);
+                        String message = obj.optString("message");
+                        if (message.contains("已注册")) {
+                            Message msg = mHandler.obtainMessage(REGISTER_FAILED);
+                            mHandler.sendMessage(msg);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    HashMap<String,String> map = new HashMap<>();
+                    map.put("nickName", userName);
+                    map.put("phoneNumber", phoneNum);
+                    map.put("password", password);
+                    PreferenceUtil.setUserInfo(RegisterActivity.this,map);
+                    Message msg = mHandler.obtainMessage(REGISTER_SUCCESS);
+                    mHandler.sendMessage(msg);
                 }
             }
         }.execute();

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Handler;
 
 /**
@@ -37,5 +38,17 @@ public class PreferenceUtil {
         editor.putString(NICKNAME,nickName);
         editor.putString(PHONENUM,phoneNum);
         editor.putString(PASSWORD,password);
+    }
+
+    public HashMap<String, String> getUserInfo(Context context){
+        SharedPreferences preferences = context.getSharedPreferences("pre", Context.MODE_PRIVATE);
+        String nickName = preferences.getString(NICKNAME,"");
+        String phoneNum = preferences.getString(PHONENUM, "");
+        String password = preferences.getString(PASSWORD,"");
+        HashMap<String,String> map = new HashMap<>();
+        map.put("nickName",nickName);
+        map.put("phoneNum",phoneNum);
+        map.put("password",password);
+        return map;
     }
 }

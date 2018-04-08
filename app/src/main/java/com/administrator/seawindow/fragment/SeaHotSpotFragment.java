@@ -98,7 +98,14 @@ public class SeaHotSpotFragment extends Fragment {
         sr_swpierefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                if (mAdapter == null) {
+                    sr_swpierefresh.setRefreshing(false);
+                    return;
+                }
                 sr_swpierefresh.setRefreshing(true);
+                mList.clear();
+                mAdapter.getmData().clear();
+                getHotSpot();
             }
         });
     }
@@ -157,6 +164,14 @@ public class SeaHotSpotFragment extends Fragment {
                     Message msg = mHandler.obtainMessage(GET_HOT_SPOT_SUCCESS);
                     mHandler.sendMessage(msg);
                 }
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (sr_swpierefresh != null) {
+                            sr_swpierefresh.setRefreshing(false);
+                        }
+                    }
+                });
             }
         }.execute();
     }

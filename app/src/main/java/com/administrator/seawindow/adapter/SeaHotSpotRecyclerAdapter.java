@@ -27,6 +27,10 @@ public class SeaHotSpotRecyclerAdapter extends RecyclerView.Adapter{
         this.mContext = mContext;
     }
 
+    public List<SeaHotSpotBean> getmData(){
+        return mData;
+    }
+
     public void setmNewsClickListener(NewsClickListener mNewsClickListener){
         this.mNewsClickListener = mNewsClickListener;
     }

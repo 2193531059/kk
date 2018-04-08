@@ -35,6 +35,7 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -257,21 +258,26 @@ public class PagerSlidingTabStrip extends HorizontalScrollView {
 			return;
 		}
 		
-//		TextView tab = new TextView(getContext());
-//		tab.setText(title);
-//		tab.setGravity(Gravity.CENTER);
-//		tab.setSingleLine();
+		TextView tab = new TextView(getContext());
+		tab.setText(title);
+		tab.setGravity(Gravity.CENTER);
+		tab.setSingleLine();
 
 		ImageView icon = new ImageView(getContext());
 		icon.setImageResource(resId);
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(100,100);
-		params.topMargin = 5;
+
+		LinearLayout.LayoutParams iconParams = new LinearLayout.LayoutParams(90,90);
+		iconParams.topMargin = 5;
+		iconParams.gravity = Gravity.CENTER_HORIZONTAL;
+		LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(200, ViewGroup.LayoutParams.WRAP_CONTENT);
+		textParams.gravity = Gravity.BOTTOM;
+		textParams.bottomMargin = 5;
 
 		LinearLayout linearLayout = new LinearLayout(getContext());
 		linearLayout.setOrientation(LinearLayout.VERTICAL);
 
-		linearLayout.addView(icon, params);
-//		linearLayout.addView(tab, defaultTabLayoutParams);
+		linearLayout.addView(icon, iconParams);
+		linearLayout.addView(tab, textParams);
 
 		addTab(position, linearLayout);
 	}

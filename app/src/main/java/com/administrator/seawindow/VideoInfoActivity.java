@@ -3,29 +3,50 @@ package com.administrator.seawindow;
 import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.administrator.seawindow.bean.VideoBean;
 import com.administrator.seawindow.video_player.MyCustomGSYPlayer;
 import com.administrator.seawindow.video_player.MyGSYPlayer;
+import com.administrator.seawindow.view.CommonTitleBar;
 
 public class VideoInfoActivity extends Activity {
 
-    private String path = "http://192.168.1.101:8080/Ocean_admin/modelVideo/1522992150308.mp4";
-    private String pathBai = "http://baishi.baidu.com/watch/5431322122707399614.html?frm=FuzzySearch&page=videoMultiNeed";
+    private String path, title;
     private MyGSYPlayer myGSYPlayer;
     private MyCustomGSYPlayer gsyVideoPlayer;
     private FrameLayout play_part;
+    private CommonTitleBar titleBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_info);
+
+        titleBar = findViewById(R.id.ct_play_video);
+        titleBar.setLeftBtnOnclickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                VideoInfoActivity.this.finish();
+            }
+        });
+
+        Bundle bundle = getIntent().getBundleExtra("bundle");
+        VideoBean bean = (VideoBean) bundle.getSerializable("bean");
+        path = bean.getVideo();
+        title = bean.getTitle();
+
         gsyVideoPlayer = findViewById(R.id.ijkplayer);
         play_part = findViewById(R.id.play_view);
         initVideo();
     }
 
     private void initVideo(){
+        if (path == null) {
+            return;
+        }
         myGSYPlayer = new MyGSYPlayer();
         myGSYPlayer.registerListener(new MyGSYPlayer.RefreshListener() {
             @Override
@@ -35,7 +56,7 @@ public class VideoInfoActivity extends Activity {
         });
         initVideoAreaSize();
         myGSYPlayer.initPlayer(this, gsyVideoPlayer);
-        myGSYPlayer.startPlay("测试视频", pathBai);
+        myGSYPlayer.startPlay(title, path);
     }
 
     private void initVideoAreaSize() {

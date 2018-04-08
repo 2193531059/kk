@@ -10,7 +10,8 @@
         android:id="@+id/ct_play_video"
         app:leftBtnIcon="@drawable/left"
         android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_height="50dp"
+        app:titleText="@string/video_info"/>
 
 
     <android.support.v4.widget.SwipeRefreshLayout

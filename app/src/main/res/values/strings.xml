@@ -32,4 +32,5 @@
     <string name="send">发送</string>
     <string name="nick">昵称：</string>
     <string name="phone_store">电话号码：</string>
+    <string name="video_info">视频详情：</string>
 </resources>

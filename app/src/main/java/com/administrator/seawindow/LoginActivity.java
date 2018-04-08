@@ -45,7 +45,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         boolean isLogin = PreferenceUtil.getLOGINSTATE(this);
-        if (isLogin) {
+        if (true) {
             OpenActivityUtil.openActivity(this, MainActivity.class);
         } else {
             setContentView(R.layout.activity_login);

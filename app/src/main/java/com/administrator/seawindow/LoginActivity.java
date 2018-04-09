@@ -19,7 +19,11 @@ import com.administrator.seawindow.utils.ServiceUtil;
 import com.administrator.seawindow.utils.ToastUtil;
 import com.administrator.seawindow.view.EditTextWithDel;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.util.HashMap;
 
 import okhttp3.Response;
 
@@ -27,8 +31,12 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
     private static final String TAG = "LoginActivity";
     private EditTextWithDel mobile_text, password_text;
     private Button login_button, bt_login_register, bt_forget_password;
+    private String nickName;
+    private String phoneNum;
+    private String password;
 
     private final int LOGIN_SUCCESS = 0;
+    private final int LOGIN_FAILED = 1;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
@@ -36,6 +44,19 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case LOGIN_SUCCESS:
+                    ToastUtil.show(LoginActivity.this, "登录成功");
+                    PreferenceUtil.setLOGINSTATE(LoginActivity.this, true);
+                    HashMap<String,String> userInfo = new HashMap<>();
+                    userInfo.put("nickName",nickName);
+                    userInfo.put("phoneNumber",phoneNum);
+                    userInfo.put("password",password);
+                    PreferenceUtil.setUserInfo(LoginActivity.this, userInfo);
+                    OpenActivityUtil.openActivity(LoginActivity.this, MainActivity.class);
+                    finish();
+                    break;
+                case LOGIN_FAILED:
+                    ToastUtil.show(LoginActivity.this, "登录失败！请检查用户名和密码！");
+                    PreferenceUtil.setLOGINSTATE(LoginActivity.this, false);
                     break;
             }
         }
@@ -45,7 +66,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         boolean isLogin = PreferenceUtil.getLOGINSTATE(this);
-        if (true) {
+        if (isLogin) {
             OpenActivityUtil.openActivity(this, MainActivity.class);
         } else {
             setContentView(R.layout.activity_login);
@@ -76,7 +97,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
         switch (v.getId()){
             case R.id.login_button:
                 String userMobile = mobile_text.getText().toString().trim();
-                String password = password_text.getText().toString().trim();
+                password = password_text.getText().toString().trim();
                 if (TextUtils.isEmpty(userMobile) || TextUtils.isEmpty(password)) {
                     ToastUtil.show(getApplicationContext(), R.string.login_params_null);
                     return;
@@ -114,6 +135,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
             String json = null;
             @Override
             protected Void doInBackground(Void... voids) {
+                Log.e(TAG, "doInBackground: url = " + ConstantPool.LOGIN +
+                        "?type=1&phoneNumber=" + mobile  + "&password=" + password);
                 Response response = HttpUtils.getInstance().request(ConstantPool.LOGIN +
                         "?type=1&phoneNumber=" + mobile  + "&password=" + password);
                 try {
@@ -129,10 +152,24 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
 
             @Override
             protected void onPostExecute(Void aVoid) {
-                PreferenceUtil.setLOGINSTATE(LoginActivity.this, true);
+                if (!TextUtils.isEmpty(json)) {
+                    if (json.contains("失败")) {
+                        Message msg = mHandler.obtainMessage(LOGIN_FAILED);
+                        mHandler.sendMessage(msg);
+                    } else {
+                        try {
+                            JSONObject obj = new JSONObject(json);
+                            JSONObject obj1 = obj.optJSONObject("user");
+                            nickName = obj1.optString("nickName");
+                            phoneNum = obj1.optString("phoneNumber");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-                Message msg = mHandler.obtainMessage(LOGIN_SUCCESS);
-                mHandler.sendMessage(msg);
+                        Message msg = mHandler.obtainMessage(LOGIN_SUCCESS);
+                        mHandler.sendMessage(msg);
+                    }
+                }
             }
         }.execute();
     }

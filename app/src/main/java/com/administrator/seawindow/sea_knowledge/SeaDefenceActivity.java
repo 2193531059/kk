@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import com.administrator.seawindow.R;
 import com.administrator.seawindow.view.CommonTitleBar;
 
 public class SeaDefenceActivity extends Activity {
     private CommonTitleBar commonTitleBar;
+    private TextView textView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,5 +23,12 @@ public class SeaDefenceActivity extends Activity {
                 finish();
             }
         });
+
+        textView = findViewById(R.id.text);
+
+        Bundle bundle = getIntent().getBundleExtra("bundle");
+        String text = bundle.getString("text", "");
+
+        textView.setText(text);
     }
 }

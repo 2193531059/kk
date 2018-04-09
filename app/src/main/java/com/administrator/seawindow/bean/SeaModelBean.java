@@ -39,7 +39,7 @@ public class SeaModelBean implements Serializable {
     }
 
     public String getVideo() {
-        return video;
+        return ConstantPool.HOST + video;
     }
 
     public void setVideo(String video) {

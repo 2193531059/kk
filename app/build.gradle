@@ -19,17 +19,25 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:design:23.3.0'
-
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    //OkHttp网络请求框架
     compile 'com.google.code.gson:gson:2.6.2'
-    compile 'com.youth.banner:banner:1.4.10' //轮播图 github上的开源库
+    //JSON数据处理开源库
+    compile 'com.youth.banner:banner:1.4.10'
+    //轮播图 github上的开源库
     compile 'com.squareup.picasso:picasso:2.5.2'
+    //第三方图片加载库 毕加索
     compile 'com.shuyu:GSYVideoPlayer:2.0.6'
+    //视频播放器，github上的开源库
+    compile 'com.mikepenz:iconics-core:2.8.2@aar'
+    //Android 图标开源库
+    compile 'com.mikepenz:google-material-typeface:3.0.1.0.original@aar'
+    //Android 图标开源库
 }

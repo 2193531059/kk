@@ -38,9 +38,10 @@ public class PreferenceUtil {
         editor.putString(NICKNAME,nickName);
         editor.putString(PHONENUM,phoneNum);
         editor.putString(PASSWORD,password);
+        editor.commit();
     }
 
-    public HashMap<String, String> getUserInfo(Context context){
+    public static HashMap<String, String> getUserInfo(Context context){
         SharedPreferences preferences = context.getSharedPreferences("pre", Context.MODE_PRIVATE);
         String nickName = preferences.getString(NICKNAME,"");
         String phoneNum = preferences.getString(PHONENUM, "");
@@ -50,5 +51,15 @@ public class PreferenceUtil {
         map.put("phoneNum",phoneNum);
         map.put("password",password);
         return map;
+    }
+
+    public static void loginOut(Context context){
+        SharedPreferences preferences = context.getSharedPreferences("pre", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(NICKNAME,"");
+        editor.putString(PHONENUM,"");
+        editor.putString(PASSWORD,"");
+        editor.putBoolean(LOGINSTATE, false);
+        editor.commit();
     }
 }

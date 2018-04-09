@@ -69,7 +69,7 @@ public class VideoInfoActivity extends AppCompatActivity {
         });
         initVideoAreaSize();
         myGSYPlayer.initPlayer(this, gsyVideoPlayer);
-        myGSYPlayer.startPlay(title, "http://video.nighthero.net/ea90323ab02e46e892e6f15c039f4350/fd58c9d8fa1e4495b14faafad2fbe652-d2c85e22456bcda13ae273d9f9ac4044-od-S00000001-200000.mp4");
+        myGSYPlayer.startPlay(title, path);
     }
 
     private void initVideoAreaSize() {

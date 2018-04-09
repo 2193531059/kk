@@ -13,4 +13,7 @@ public class ConstantPool {
     public static final String COMMENT_SEND = HOST + "/addCommentsServlet";
     public static final String MASTER_CIRCLE = HOST + "/findslideshowAppServlet";
     public static final String GET_KNOWLEDGE = HOST + "/findAllKnowledgeServlet";
+    public static final String GET_ACTIVITY = HOST + "/findAllActivityAppServlet";
+    public static final String SEARCH = HOST + "/searchServlet?searchField=";
+    public static final String GET_VIDEO = HOST + "/findAllVideoAppServlet";
 }

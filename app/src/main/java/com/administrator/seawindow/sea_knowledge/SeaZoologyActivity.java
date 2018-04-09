@@ -26,6 +26,9 @@ public class SeaZoologyActivity extends Activity {
         textView = findViewById(R.id.text);
 
         Bundle bundle = getIntent().getBundleExtra("bundle");
+        if (bundle == null) {
+            return;
+        }
         String text = bundle.getString("text", "");
 
         textView.setText(text);

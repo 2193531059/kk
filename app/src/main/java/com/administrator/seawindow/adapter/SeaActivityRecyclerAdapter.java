@@ -32,6 +32,10 @@ public class SeaActivityRecyclerAdapter extends RecyclerView.Adapter{
         this.mNewsClickListener = mNewsClickListener;
     }
 
+    public List<ActivityBean> getmData(){
+        return mData;
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.recycler_item_activity, parent, false);

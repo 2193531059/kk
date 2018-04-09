@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.administrator.seawindow.view.ObservableScrollView
+        <ScrollView
             android:scrollbars="none"
             android:id="@+id/scroll_part"
             android:layout_width="match_parent"
@@ -136,11 +136,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"/>
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rv_play_video_comment"
+                    <TextView
+                        android:id="@+id/text"
                         android:layout_below="@id/view"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
+                        android:textColor="#000000"
                         android:layout_marginLeft="30dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
@@ -148,7 +149,7 @@
                 </RelativeLayout>
 
             </RelativeLayout>
-        </com.administrator.seawindow.view.ObservableScrollView>
+        </ScrollView>
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <RelativeLayout

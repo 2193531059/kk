@@ -13,9 +13,9 @@ import java.util.logging.Handler;
 
 public class PreferenceUtil {
     private static String LOGINSTATE = "seaWindow.loginState";
-    private static String NICKNAME = "seaWindow.loginState";
-    private static String PASSWORD = "seaWindow.loginState";
-    private static String PHONENUM = "seaWindow.loginState";
+    private static String NICKNAME = "seaWindow.nickName";
+    private static String PASSWORD = "seaWindow.password";
+    private static String PHONENUM = "seaWindow.phoneNum";
 
     public static void setLOGINSTATE(Context context, boolean loginState){
         SharedPreferences preferences = context.getSharedPreferences("pre", Context.MODE_PRIVATE);

@@ -23,7 +23,8 @@
         <activity
             android:name=".RegisterActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SplashActivity">
+        <activity android:name=".SplashActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

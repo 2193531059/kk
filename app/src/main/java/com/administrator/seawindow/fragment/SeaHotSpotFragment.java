@@ -47,29 +47,7 @@ public class SeaHotSpotFragment extends Fragment {
     private SeaHotSpotRecyclerAdapter mAdapter;
     private List<SeaHotSpotBean> mList;
     private SwipeRefreshLayout sr_swpierefresh;
-    private final int GET_HOT_SPOT_SUCCESS = 0;
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case GET_HOT_SPOT_SUCCESS:
-                    mAdapter = new SeaHotSpotRecyclerAdapter(mList, getActivity());
-                    gridview_news.setAdapter(mAdapter);
-                    mAdapter.setmNewsClickListener(new SeaHotSpotRecyclerAdapter.NewsClickListener() {
-                        @Override
-                        public void onNewsClick(int position) {
-                            SeaHotSpotBean bean = mList.get(position);
-                            Log.e(TAG, "onNewsClick: bean = " + bean);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("bean", bean);
-                            OpenActivityUtil.openActivity(getActivity(), bundle, SeaHotSpotInfoActivity.class);
-                        }
-                    });
-                    break;
-            }
-        }
-    };
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -82,6 +60,20 @@ public class SeaHotSpotFragment extends Fragment {
 
     private void initData(){
         mList = new ArrayList<>();
+
+        mAdapter = new SeaHotSpotRecyclerAdapter(mList, getActivity());
+        gridview_news.setAdapter(mAdapter);
+        mAdapter.setmNewsClickListener(new SeaHotSpotRecyclerAdapter.NewsClickListener() {
+            @Override
+            public void onNewsClick(int position) {
+                SeaHotSpotBean bean = mList.get(position);
+                Log.e(TAG, "onNewsClick: bean = " + bean);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("bean", bean);
+                OpenActivityUtil.openActivity(getActivity(), bundle, SeaHotSpotInfoActivity.class);
+            }
+        });
+
         getHotSpot();
     }
 
@@ -161,15 +153,14 @@ public class SeaHotSpotFragment extends Fragment {
                         Log.e(TAG, "onPostExecute:getHotSpot e = " + e.getMessage());
                         e.printStackTrace();
                     }
-                    Message msg = mHandler.obtainMessage(GET_HOT_SPOT_SUCCESS);
-                    mHandler.sendMessage(msg);
                 }
-                mHandler.post(new Runnable() {
+                new Handler().post(new Runnable() {
                     @Override
                     public void run() {
                         if (sr_swpierefresh != null) {
                             sr_swpierefresh.setRefreshing(false);
                         }
+                        mAdapter.notifyDataSetChanged();
                     }
                 });
             }

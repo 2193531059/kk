@@ -50,32 +50,7 @@ public class SeaModelFragment extends Fragment {
     private SwipeRefreshLayout sr_swpierefresh;
     private SeaModelRecyclerAdapter mAdapter;
     private List<SeaModelBean> mList;
-    private final int GET_SEAMODEL_SUCCESS = 0;
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what){
-                case GET_SEAMODEL_SUCCESS:
-                    mAdapter = new SeaModelRecyclerAdapter(mList, getActivity());
-                    gridview_model.setAdapter(mAdapter);
-                    mAdapter.setmNewsClickListener(new SeaModelRecyclerAdapter.NewsClickListener() {
-                        @Override
-                        public void onNewsClick(int position) {
-                            SeaModelBean bean = mList.get(position);
-                            Log.e(TAG, "onNewsClick: bean = " + bean);
-                            String url = bean.getVideo();
-                            String title = bean.getTitle();
-                            Bundle bundle = new Bundle();
-                            bundle.putString("url", url);
-                            bundle.putString("title", title);
-                            OpenActivityUtil.openActivity(getActivity(), bundle, VideoInfoActivity.class);
-                        }
-                    });
-                    break;
-            }
-        }
-    };
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -109,6 +84,26 @@ public class SeaModelFragment extends Fragment {
 
     private void initData(){
         mList = new ArrayList<>();
+
+        mAdapter = new SeaModelRecyclerAdapter(mList, getActivity());
+        gridview_model.setAdapter(mAdapter);
+        mAdapter.setmNewsClickListener(new SeaModelRecyclerAdapter.NewsClickListener() {
+            @Override
+            public void onNewsClick(int position) {
+                SeaModelBean bean = mList.get(position);
+                Log.e(TAG, "onNewsClick: bean = " + bean);
+                String url = bean.getVideo();
+                String title = bean.getTitle();
+                String text = bean.getText();
+                Log.e(TAG, "onNewsClick: text = " + text);
+                Bundle bundle = new Bundle();
+                bundle.putString("url", url);
+                bundle.putString("title", title);
+                bundle.putString("text", text);
+                OpenActivityUtil.openActivity(getActivity(), bundle, VideoInfoActivity.class);
+            }
+        });
+
         getSeaModels();
     }
 
@@ -145,16 +140,15 @@ public class SeaModelFragment extends Fragment {
                             bean.setVideo(obj.optString("video"));
                             mList.add(bean);
                         }
-                        Message msg = mHandler.obtainMessage(GET_SEAMODEL_SUCCESS);
-                        mHandler.sendMessage(msg);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
-                mHandler.post(new Runnable() {
+                new Handler().post(new Runnable() {
                     @Override
                     public void run() {
                         sr_swpierefresh.setRefreshing(false);
+                        mAdapter.notifyDataSetChanged();
                     }
                 });
             }

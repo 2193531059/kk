@@ -4,22 +4,26 @@ import android.content.Context;
 import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.administrator.seawindow.video_player.MyCustomGSYPlayer;
 import com.administrator.seawindow.video_player.MyGSYPlayer;
 import com.administrator.seawindow.view.CommonTitleBar;
 
 public class VideoInfoActivity extends AppCompatActivity {
-
-    private String path, title;
+    private static final String TAG = "VideoInfoActivity";
+    private String path, title, text;
     private MyGSYPlayer myGSYPlayer;
     private MyCustomGSYPlayer gsyVideoPlayer;
     private FrameLayout play_part;
     private CommonTitleBar titleBar;
+    private TextView text_tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,7 @@ public class VideoInfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video_info);
 
         titleBar = findViewById(R.id.ct_play_video);
+        text_tv = findViewById(R.id.text);
         titleBar.setLeftBtnOnclickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,6 +46,11 @@ public class VideoInfoActivity extends AppCompatActivity {
         if (bundle != null) {
             path = bundle.getString("url");
             title = bundle.getString("title");
+            text = bundle.getString("text");
+        }
+        Log.e(TAG, "onCreate: text = " + text);
+        if (!TextUtils.isEmpty(text)) {
+            text_tv.setText(text);
         }
 
         gsyVideoPlayer = findViewById(R.id.ijkplayer);

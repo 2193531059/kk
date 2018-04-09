@@ -46,9 +46,9 @@ public class SeaModelRecyclerAdapter extends RecyclerView.Adapter{
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         SeaModelBean modelBean = mData.get(position);
         String title = modelBean.getTitle();
-        String text = modelBean.getText();
+//        String text = modelBean.getText();
         ((NewsViewHolder)holder).modelTitle.setText(title);
-        ((NewsViewHolder)holder).modelText.setText(text);
+//        ((NewsViewHolder)holder).modelText.setText(text);
         ((NewsViewHolder)holder).view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,14 +68,14 @@ public class SeaModelRecyclerAdapter extends RecyclerView.Adapter{
     }
 
     class NewsViewHolder extends RecyclerView.ViewHolder{
-        private TextView modelTitle, modelText;
+        private TextView modelTitle;
         private View view;
 
         public NewsViewHolder(View itemView) {
             super(itemView);
             view = itemView;
             modelTitle = itemView.findViewById(R.id.tv_model_title);
-            modelText = itemView.findViewById(R.id.tv_model_text);
+//            modelText = itemView.findViewById(R.id.tv_model_text);
         }
     }
 }

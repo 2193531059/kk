@@ -5,10 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.administrator.seawindow.R;
 import com.administrator.seawindow.bean.KeyWordBean;
+import com.administrator.seawindow.bean.SeaHotSpotBean;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -18,12 +21,12 @@ import java.util.List;
 
 public class KeyWordFindAdapter extends RecyclerView.Adapter{
 
-    private List<KeyWordBean> mData;
+    private List<SeaHotSpotBean> mData;
     private LayoutInflater inflater;
     private Context context;
     private MyKeyWordClickListener clickListener;
 
-    public KeyWordFindAdapter(Context context, List<KeyWordBean> mList) {
+    public KeyWordFindAdapter(Context context, List<SeaHotSpotBean> mList) {
         inflater = LayoutInflater.from(context);
         mData = mList;
         this.context = context;
@@ -33,21 +36,23 @@ public class KeyWordFindAdapter extends RecyclerView.Adapter{
         clickListener = listener;
     }
 
-    public List<KeyWordBean> getmData(){
+    public List<SeaHotSpotBean> getmData(){
         return mData;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.key_word_find_item, parent, false);
+        View view = inflater.inflate(R.layout.recycler_item_news, parent, false);
         return new KeyWordViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
-        KeyWordBean bean = mData.get(position);
-        String content = bean.getContent();
-        ((KeyWordViewHolder)holder).content.setText(content);
+        SeaHotSpotBean hotBean = mData.get(position);
+        String title = hotBean.getTitle();
+        String picUrl = hotBean.getImage();
+        Picasso.with(context).load(picUrl).into(((KeyWordViewHolder)holder).newsCover);
+        ((KeyWordViewHolder)holder).newsTitle.setText(title);
         ((KeyWordViewHolder)holder).view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -66,14 +71,15 @@ public class KeyWordFindAdapter extends RecyclerView.Adapter{
     }
 
     class KeyWordViewHolder extends RecyclerView.ViewHolder{
-
-        private TextView content;
+        private ImageView newsCover;
+        private TextView newsTitle;
         private View view;
 
         public KeyWordViewHolder(View itemView) {
             super(itemView);
             view = itemView;
-            content = itemView.findViewById(R.id.content);
+            newsCover = (ImageView) itemView.findViewById(R.id.iv_newsImage);
+            newsTitle = (TextView) itemView.findViewById(R.id.tv_news_describe);
         }
     }
 }

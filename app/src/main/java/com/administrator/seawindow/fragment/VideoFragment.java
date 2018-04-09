@@ -1,6 +1,9 @@
 package com.administrator.seawindow.fragment;
 
+import android.annotation.SuppressLint;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
@@ -8,6 +11,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.OrientationHelper;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,12 +23,20 @@ import com.administrator.seawindow.VideoInfoActivity;
 import com.administrator.seawindow.adapter.VideoRecyclerAdapter;
 import com.administrator.seawindow.bean.VideoBean;
 import com.administrator.seawindow.utils.ConstantPool;
+import com.administrator.seawindow.utils.HttpUtils;
 import com.administrator.seawindow.utils.OpenActivityUtil;
 import com.administrator.seawindow.utils.ToastUtil;
 import com.administrator.seawindow.view.VpSwipeRefreshLayout;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Response;
 
 /**
  * Created by Administrator on 2018/4/3.
@@ -32,7 +44,7 @@ import java.util.List;
 
 public class VideoFragment extends Fragment  {
     private static final String TAG = "VideoFragment";
-    private VpSwipeRefreshLayout vpSwipeRefreshLayout;
+    private SwipeRefreshLayout vpSwipeRefreshLayout;
     private RecyclerView gridview_videoes;
     private VideoRecyclerAdapter mAdapter;
     private List<VideoBean> mList;
@@ -62,7 +74,8 @@ public class VideoFragment extends Fragment  {
             public void onVideoClick(int position) {
                 List<VideoBean> data = mAdapter.getmData();
                 VideoBean bean = data.get(position);
-                String url = bean.getVideo();
+                String url = ConstantPool.HOST + bean.getVideo();
+                Log.e(TAG, "onVideoClick: url = " + url);
                 String title = bean.getTitle();
                 Bundle bundle = new Bundle();
                 bundle.putString("url", url);
@@ -74,22 +87,62 @@ public class VideoFragment extends Fragment  {
         vpSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new android.os.Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        vpSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 5000);
+                mList.clear();
+                mAdapter.getmData().clear();
+                getData();
             }
         });
     }
 
     private void initData(){
         mList = new ArrayList<>();
-        VideoBean bean = new VideoBean();
-        bean.setId(1);
-        bean.setTitle("视频：南海争端 作为大国国民我们究竟应该怎么看南海问题");
-        bean.setVideo(ConstantPool.HOST + "oceanVideo/1523072151801.mp4");
-        mList.add(bean);
+        getData();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    private void getData(){
+        new AsyncTask<Void, Void, Void>() {
+            String json = null;
+            @Override
+            protected Void doInBackground(Void... voids) {
+                Response response = HttpUtils.getInstance().request(ConstantPool.GET_VIDEO);
+                try {
+                    if (response != null) {
+                        json = response.body().string();
+                        Log.e(TAG, "doInBackground:getData json = " + json);
+                    }
+                } catch (IOException e) {
+                    Log.e(TAG, "doInBackground:getData e = " + e);
+                    e.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                if (!TextUtils.isEmpty(json)) {
+                    try {
+                        JSONArray array = new JSONArray(json);
+                        for(int i = 0;i<array.length();i++){
+                            JSONObject objChild = array.getJSONObject(i);
+                            VideoBean bean = new VideoBean();
+                            bean.setId(objChild.optInt("id"));
+                            bean.setTitle(objChild.optString("title"));
+                            bean.setVideo(objChild.optString("video"));
+                            mList.add(bean);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        vpSwipeRefreshLayout.setRefreshing(false);
+                        mAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        }.execute();
     }
 }

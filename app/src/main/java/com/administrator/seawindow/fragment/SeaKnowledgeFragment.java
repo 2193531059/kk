@@ -31,6 +31,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.Response;
 
@@ -134,6 +135,10 @@ public class SeaKnowledgeFragment extends Fragment implements View.OnClickListen
         String sailingText = null;
         String tourismText = null;
         if (map != null) {
+//            for (Map.Entry<String, String> en : map.entrySet()) {
+//                Log.e(TAG, "onClick: key = " + en.getKey());
+//                Log.e(TAG, "onClick: value = " + en.getValue());
+//            }
             secretText = map.get("海洋奥秘");
             zoologyText = map.get("海洋生态");
             resourceText = map.get("海洋资源");
@@ -149,23 +154,23 @@ public class SeaKnowledgeFragment extends Fragment implements View.OnClickListen
                 break;
             case R.id.sea_zoology:
                 bundle.putString("text", zoologyText);
-                OpenActivityUtil.openActivity(getActivity(), SeaZoologyActivity.class);
+                OpenActivityUtil.openActivity(getActivity(), bundle, SeaZoologyActivity.class);
                 break;
             case R.id.sea_resource:
                 bundle.putString("text", resourceText);
-                OpenActivityUtil.openActivity(getActivity(), SeaResouceActivity.class);
+                OpenActivityUtil.openActivity(getActivity(),bundle, SeaResouceActivity.class);
                 break;
             case R.id.sea_defence:
                 bundle.putString("text", defenceText);
-                OpenActivityUtil.openActivity(getActivity(), SeaDefenceActivity.class);
+                OpenActivityUtil.openActivity(getActivity(),bundle, SeaDefenceActivity.class);
                 break;
             case R.id.ocean_sailing:
                 bundle.putString("text", sailingText);
-                OpenActivityUtil.openActivity(getActivity(), OceanSailingActivity.class);
+                OpenActivityUtil.openActivity(getActivity(),bundle, OceanSailingActivity.class);
                 break;
             case R.id.coastal_tourism:
                 bundle.putString("text", tourismText);
-                OpenActivityUtil.openActivity(getActivity(), CoastalTourismActivity.class);
+                OpenActivityUtil.openActivity(getActivity(),bundle, CoastalTourismActivity.class);
                 break;
         }
     }

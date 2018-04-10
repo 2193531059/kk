@@ -7,4 +7,6 @@
     <drawable name="write">#FFFFFF</drawable>
     <drawable name="gray">#EAEAEA</drawable>
     <drawable name="gray1">#FAFAFA</drawable>
+    <color name="dimgrey">#696969</color>
+    <color name="common_bg">#ff282828</color>
 </resources>

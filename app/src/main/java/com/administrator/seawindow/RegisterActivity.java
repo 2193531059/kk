@@ -31,7 +31,7 @@ import okhttp3.Response;
 
 public class RegisterActivity extends Activity implements EditTextWithDel.MyClickListener, View.OnClickListener{
     private static final String TAG = "RegisterActivity";
-    private EditTextWithDel et_username_register, et_userphone_register, et_password_register, et_confirm_password_register;
+    private EditTextWithDel et_username_register, et_userphone_register, et_password_register, et_confirm_password_register, et_email_register;
     private Button register_button;
     private MyTextWatcher mTextWatcher;
 
@@ -44,13 +44,11 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case REGISTER_SUCCESS:
-                    PreferenceUtil.setLOGINSTATE(RegisterActivity.this,true);
-                    OpenActivityUtil.openActivity(RegisterActivity.this, MainActivity.class);
+                    OpenActivityUtil.openActivity(RegisterActivity.this, LoginActivity.class);
                     finish();
                     break;
                 case REGISTER_FAILED:
-                    PreferenceUtil.setLOGINSTATE(RegisterActivity.this,false);
-                    ToastUtil.show(RegisterActivity.this, "手机号码已注册！");
+                    ToastUtil.show(RegisterActivity.this, R.string.phone_is_registered);
                     break;
             }
         }
@@ -70,6 +68,7 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
         et_password_register = findViewById(R.id.et_password_register);
         et_confirm_password_register = findViewById(R.id.et_confirm_password_register);
         register_button = findViewById(R.id.register_button);
+        et_email_register = findViewById(R.id.et_email_register);
 
         mTextWatcher = new MyTextWatcher(et_username_register, MyTextWatcher.TYPE_USERNAME);
     }
@@ -79,6 +78,7 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
         et_userphone_register.registerClickListener(this);
         et_password_register.registerClickListener(this);
         et_confirm_password_register.registerClickListener(this);
+        et_email_register.registerClickListener(this);
         register_button.setOnClickListener(this);
     }
 
@@ -88,13 +88,13 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
     }
 
     @SuppressLint("StaticFieldLeak")
-    private void register(final String userName, final String phoneNum, final String password){
+    private void register(final String userName, final String phoneNum, final String password, final String emailAddress){
         new AsyncTask<Void, Void, Void>() {
             String json = null;
             @Override
             protected Void doInBackground(Void... voids) {
                 Response response = HttpUtils.getInstance().request(ConstantPool.REGISTER +
-                        "?type=1&phoneNumber=" + phoneNum + "&nickName=" + userName + "&password=" + password);
+                        "?type=1&phoneNumber=" + phoneNum + "&nickName=" + userName + "&password=" + password + "&email=" + emailAddress);
                 try {
                     if(response != null){
                         json = response.body().string();
@@ -121,11 +121,6 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
                         e.printStackTrace();
                     }
                 } else {
-                    HashMap<String,String> map = new HashMap<>();
-                    map.put("nickName", userName);
-                    map.put("phoneNumber", phoneNum);
-                    map.put("password", password);
-                    PreferenceUtil.setUserInfo(RegisterActivity.this,map);
                     Message msg = mHandler.obtainMessage(REGISTER_SUCCESS);
                     mHandler.sendMessage(msg);
                 }
@@ -141,8 +136,9 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
                 String mobile = et_userphone_register.getText().toString().trim();
                 String password = et_password_register.getText().toString().trim();
                 String confirmPaw = et_confirm_password_register.getText().toString().trim();
+                String email = et_email_register.getText().toString().trim();
 
-                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(mobile) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPaw)) {
+                if (TextUtils.isEmpty(username) || TextUtils.isEmpty(mobile) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPaw) || TextUtils.isEmpty(email)) {
                     ToastUtil.show(getApplicationContext(),R.string.register_params_error);
                     return;
                 }
@@ -151,6 +147,10 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
                 }
                 if (!isMobile(mobile)) {
                     ToastUtil.show(getApplicationContext(),R.string.login_params_error);
+                    return;
+                }
+                if (!isEmail(email)) {
+                    ToastUtil.show(getApplicationContext(),R.string.login_email_error);
                     return;
                 }
                 if (password.length() < 6 || password.length() > 20) {
@@ -162,7 +162,7 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
                     return;
                 }
 
-                register(username, mobile, password);
+                register(username, mobile, password, email);
                 break;
         }
     }
@@ -175,5 +175,14 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
             //matches():字符串是否在给定的正则表达式匹配
             return number.matches(num);
         }
+    }
+
+    private boolean isEmail(String emailAddress){
+        String regex_email = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|" +
+                "(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
+        if (emailAddress.matches(regex_email)) {
+            return true;
+        }
+        return false;
     }
 }

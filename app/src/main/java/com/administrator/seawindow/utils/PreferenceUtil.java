@@ -16,17 +16,18 @@ public class PreferenceUtil {
     private static String NICKNAME = "seaWindow.nickName";
     private static String PASSWORD = "seaWindow.password";
     private static String PHONENUM = "seaWindow.phoneNum";
+    private static String EMAIL = "seaWindow.email";
 
-    public static void setLOGINSTATE(Context context, boolean loginState){
+    public static void setLOGINSTATE(Context context, int id){
         SharedPreferences preferences = context.getSharedPreferences("pre", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(LOGINSTATE, loginState);
+        editor.putInt(LOGINSTATE, id);
         editor.commit();
     }
 
-    public static boolean getLOGINSTATE(Context context){
+    public static int getLOGINSTATE(Context context){
         SharedPreferences preferences = context.getSharedPreferences("pre", Context.MODE_PRIVATE);
-        return preferences.getBoolean(LOGINSTATE, false);
+        return preferences.getInt(LOGINSTATE, -1);
     }
 
     public static void setUserInfo(Context context, HashMap<String,String> userInfo){
@@ -35,9 +36,11 @@ public class PreferenceUtil {
         String nickName = userInfo.get("nickName");
         String phoneNum = userInfo.get("phoneNumber");
         String password = userInfo.get("password");
+        String email = userInfo.get("email");
         editor.putString(NICKNAME,nickName);
         editor.putString(PHONENUM,phoneNum);
         editor.putString(PASSWORD,password);
+        editor.putString(EMAIL,email);
         editor.commit();
     }
 
@@ -46,10 +49,12 @@ public class PreferenceUtil {
         String nickName = preferences.getString(NICKNAME,"");
         String phoneNum = preferences.getString(PHONENUM, "");
         String password = preferences.getString(PASSWORD,"");
+        String email = preferences.getString(EMAIL,"");
         HashMap<String,String> map = new HashMap<>();
         map.put("nickName",nickName);
         map.put("phoneNum",phoneNum);
         map.put("password",password);
+        map.put("email",email);
         return map;
     }
 
@@ -59,6 +64,7 @@ public class PreferenceUtil {
         editor.putString(NICKNAME,"");
         editor.putString(PHONENUM,"");
         editor.putString(PASSWORD,"");
+        editor.putString(EMAIL,"");
         editor.putBoolean(LOGINSTATE, false);
         editor.commit();
     }

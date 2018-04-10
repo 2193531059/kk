@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
     //联网
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     //读取外置存储卡
@@ -14,6 +16,16 @@
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.Design.NoActionBar">
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.administrator.seawindow.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
         <activity
             android:name=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar" />
@@ -22,8 +34,17 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".RegisterActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
+        </activity>
+        <activity
+            android:name=".SplashActivity"
             android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +52,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".VideoInfoActivity"
+        <activity
+            android:name=".VideoInfoActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:hardwareAccelerated="true">
 
@@ -45,18 +67,25 @@
         <activity
             android:name=".SeaHotSpotInfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".sea_knowledge.SeaSecretActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".sea_knowledge.SeaZoologyActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".sea_knowledge.SeaResouceActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".sea_knowledge.SeaDefenceActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".sea_knowledge.OceanSailingActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".sea_knowledge.CoastalTourismActivity"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".sea_knowledge.SeaSecretActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".sea_knowledge.SeaZoologyActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".sea_knowledge.SeaResouceActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".sea_knowledge.SeaDefenceActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".sea_knowledge.OceanSailingActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".sea_knowledge.CoastalTourismActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".EditPictureActivity"></activity>
     </application>
 
 </manifest>

@@ -16,4 +16,5 @@ public class ConstantPool {
     public static final String GET_ACTIVITY = HOST + "/findAllActivityAppServlet";
     public static final String SEARCH = HOST + "/searchServlet?searchField=";
     public static final String GET_VIDEO = HOST + "/findAllVideoAppServlet";
+    public static final String UPLOAD_HEAD_PHOTO = HOST + "/addUserImageServlet";
 }

@@ -34,6 +34,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
     private String nickName;
     private String phoneNum;
     private String password;
+    private String email;
+    private int id = -1;
 
     private final int LOGIN_SUCCESS = 0;
     private final int LOGIN_FAILED = 1;
@@ -45,18 +47,18 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
             switch (msg.what){
                 case LOGIN_SUCCESS:
                     ToastUtil.show(LoginActivity.this, "登录成功");
-                    PreferenceUtil.setLOGINSTATE(LoginActivity.this, true);
+                    PreferenceUtil.setLOGINSTATE(LoginActivity.this, id);
                     HashMap<String,String> userInfo = new HashMap<>();
                     userInfo.put("nickName",nickName);
                     userInfo.put("phoneNumber",phoneNum);
                     userInfo.put("password",password);
+                    userInfo.put("email",email);
                     PreferenceUtil.setUserInfo(LoginActivity.this, userInfo);
                     OpenActivityUtil.openActivity(LoginActivity.this, MainActivity.class);
                     finish();
                     break;
                 case LOGIN_FAILED:
                     ToastUtil.show(LoginActivity.this, "登录失败！请检查用户名和密码！");
-                    PreferenceUtil.setLOGINSTATE(LoginActivity.this, false);
                     break;
             }
         }
@@ -65,8 +67,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        boolean isLogin = PreferenceUtil.getLOGINSTATE(this);
-        if (isLogin) {
+        int id = PreferenceUtil.getLOGINSTATE(this);
+        if (id != -1) {
             OpenActivityUtil.openActivity(this, MainActivity.class);
         } else {
             setContentView(R.layout.activity_login);
@@ -162,6 +164,8 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
                             JSONObject obj1 = obj.optJSONObject("user");
                             nickName = obj1.optString("nickName");
                             phoneNum = obj1.optString("phoneNumber");
+                            id = obj1.optInt("id");
+                            email = obj1.optString("email");
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

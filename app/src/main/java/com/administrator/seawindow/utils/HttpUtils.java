@@ -1,14 +1,19 @@
 package com.administrator.seawindow.utils;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
+import com.administrator.seawindow.MainActivity;
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
@@ -19,6 +24,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+
+import static java.lang.String.valueOf;
 
 /**
  * Created by Administrator on 2018/4/4.
@@ -112,47 +119,43 @@ public class HttpUtils {
         }
     }
 
-    public void doPostHeadPhoto(final String url, Object params, final File file){
-        String      json        = new Gson().toJson(params);
-        //建立body，然后设置这个body里面放的数据类型是什么。
-        RequestBody body = RequestBody.create(JSON,json);
-        //建立请求
-        Request request = new Request.Builder().post(body).url(url).build();
-        //定义Call
-        Call call1 = mHttpClient.newCall(request);
-        //执行Call
-        call1.enqueue(new Callback() {
+    public void doPostHeadPhoto(final Context context, final String url, Map<String, Object> params, final File file){
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder requestBody = new MultipartBody.Builder().setType(MultipartBody.FORM);
+        if(file != null){
+            // MediaType.parse() 里面是上传的文件类型。
+            RequestBody body = RequestBody.create(MediaType.parse("image/*"), file);
+            String filename = file.getName();
+            // 参数分别为， 请求key ，文件名称 ， RequestBody
+            requestBody.addFormDataPart("headImage", filename, body);
+        }
+        if (params != null) {
+            // map 里面是请求中所需要的 key 和 value
+            for (Map.Entry entry : params.entrySet()) {
+                requestBody.addFormDataPart(valueOf(entry.getKey()), valueOf(entry.getValue()));
+            }
+        }
+        Request request = new Request.Builder().url(url).post(requestBody.build()).tag(context).build();
+        // readTimeout("请求超时时间" , 时间单位);
+        client.newBuilder().readTimeout(5000, TimeUnit.MILLISECONDS).build().newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Call call, IOException e) {
-
+            public void onFailure(Call call, IOException ex) {
+                Log.e("lfq" ,"onFailure");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if (file != null) {
-                    RequestBody body;
-                    MultipartBody.Builder builder = new MultipartBody.Builder().setType(MultipartBody.FORM);
-                    builder.addFormDataPart("headPicture", "headPicture.jpg", RequestBody.create(MediaType.parse("image/jpg"), file));
-                    body = builder.build();
-                    final Request request = new Request.Builder().post(body).url(url).build();
-                    Call call2 = mHttpClient.newCall(request);
-                    call2.enqueue(new Callback() {
-                        @Override
-                        public void onFailure(Call call, IOException e) {
-                            Log.e(TAG, "onFailure: e = " + e.getMessage());
-                        }
-
-                        @Override
-                        public void onResponse(Call call, Response response) throws IOException {
-                            Log.e(TAG, "onResponse: response = " + response.body().string());
-                        }
-                    });
+                if (response.isSuccessful()) {
+                    String str = response.body().string();
+                    Log.e("lfq", response.message() + " , body " + str);
+                    PreferenceUtil.setUserHeadphoto(context, str);
+                    Intent intent = new Intent();
+                    intent.setAction(ConstantPool.UPLOAD_HEAD);
+                    context.sendBroadcast(intent);
+                } else {
+                    Log.e("lfq" ,response.message() + " error : body " + response.body().string());
                 }
             }
         });
-
-
-
-
     }
 }

@@ -5,7 +5,7 @@ package com.administrator.seawindow.utils;
  */
 
 public class ConstantPool {
-    public static final String HOST = "http://192.168.1.100:8080/Ocean_admin/";
+    public static final String HOST = "http://192.168.1.101:8080/Ocean_admin/";
     public static final String LOGIN = HOST + "/loginAppServlet";
     public static final String REGISTER = HOST + "/signInServlet";
     public static final String GET_HOT_SPOT = HOST + "/findAllhotnewsAppServlet";
@@ -17,4 +17,9 @@ public class ConstantPool {
     public static final String SEARCH = HOST + "/searchServlet?searchField=";
     public static final String GET_VIDEO = HOST + "/findAllVideoAppServlet";
     public static final String UPLOAD_HEAD_PHOTO = HOST + "/addUserImageServlet";
+    public static final String GET_QUESTION = HOST + "/findAllOnlineQuestionsAPPServlet";
+    public static final String CHECNK_ANSWER = HOST + "/checkAnswersServlet";
+
+
+    public static final String UPLOAD_HEAD = "upload.headphoto.success";
 }

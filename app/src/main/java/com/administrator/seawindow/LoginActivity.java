@@ -68,7 +68,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         int id = PreferenceUtil.getLOGINSTATE(this);
-        if (true) {
+        if (id != -1) {
             OpenActivityUtil.openActivity(this, MainActivity.class);
         } else {
             setContentView(R.layout.activity_login);
@@ -164,7 +164,7 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
                             JSONObject obj1 = obj.optJSONObject("user");
                             nickName = obj1.optString("nickName");
                             phoneNum = obj1.optString("phoneNumber");
-                            id = obj1.optInt("id");
+                            id = obj1.optInt("uid");
                             email = obj1.optString("email");
                         } catch (JSONException e) {
                             e.printStackTrace();

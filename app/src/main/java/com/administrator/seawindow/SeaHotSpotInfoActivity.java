@@ -22,12 +22,17 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.administrator.seawindow.adapter.CommentListAdapter;
+import com.administrator.seawindow.bean.CommentBean;
 import com.administrator.seawindow.bean.SeaHotSpotBean;
 import com.administrator.seawindow.listener.MyTextWatcher;
 import com.administrator.seawindow.utils.ConstantPool;
+import com.administrator.seawindow.utils.EventBusEvent;
 import com.administrator.seawindow.utils.HttpUtils;
+import com.administrator.seawindow.utils.PreferenceUtil;
 import com.administrator.seawindow.view.CommonTitleBar;
+import com.squareup.picasso.Picasso;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +42,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Response;
+
+import static com.administrator.seawindow.utils.EventBusEvent.RFRESH_SEA_HOTNEWS;
 
 public class SeaHotSpotInfoActivity extends Activity implements View.OnClickListener{
     private static final String TAG = "SeaHotSpotInfoActivity";
@@ -54,8 +61,10 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
     private Button comment_send;
     private MyTextWatcher myTextWatcher;
     private CommentListAdapter mAdapter;
-    private List<String> mList;
-
+    private List<CommentBean> mList;
+    private String imageNews;
+    private int commenCount;
+    private boolean isInputShow;
     private boolean isCommentListShow = false;
 
     private final int SEND_COMMENT_SUCCESS = 0;
@@ -70,9 +79,19 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
                     rl_comment_input.setVisibility(View.GONE);
                     comment_input.setText("");
 
+                    CommentBean bean = new CommentBean();
                     String comments = (String) msg.obj;
-                    List<String> datas = mAdapter.getData();
-                    datas.add(comments);
+                    bean.setText(comments);
+                    String nickName = PreferenceUtil.getUserInfo(SeaHotSpotInfoActivity.this).get("nickName");
+                    String headPhotoAdr = PreferenceUtil.getUserHeadphoto(SeaHotSpotInfoActivity.this);
+                    bean.setNickName(nickName);
+                    bean.setImage(headPhotoAdr);
+
+                    commenCount++;
+                    comment_count.setText(commenCount + "");
+                    EventBus.getDefault().post(new EventBusEvent(RFRESH_SEA_HOTNEWS));
+                    List<CommentBean> datas = mAdapter.getData();
+                    datas.add(bean);
                     mAdapter.notifyDataSetChanged();
                     break;
             }
@@ -91,12 +110,18 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
         time = bean.getPublishTime();
         text = bean.getText();
         id = bean.getId();
+        imageNews = bean.getImage();
 
-        String[] comments = bean.getComments();
-        for(int i = 0;i<comments.length;i++){
-            mList.add(comments[i]);
+        if (!TextUtils.isEmpty(imageNews)) {
+            Picasso.with(this).load(imageNews).into(image_hot);
         }
 
+        List<CommentBean> commentBeans = bean.getComments();
+        commenCount = commentBeans.size();
+        comment_count.setText(commenCount + "");
+        for(int i = 0;i<commentBeans.size();i++){
+            mList.add(commentBeans.get(i));
+        }
         setData();
         setListener();
     }
@@ -147,7 +172,6 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.comment:
-                rl_comment_input.setVisibility(View.VISIBLE);
                 if (isCommentListShow) {
                     commentRecycler.setVisibility(View.GONE);
                     isCommentListShow = false;
@@ -155,6 +179,7 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
                     commentRecycler.setVisibility(View.VISIBLE);
                     isCommentListShow = true;
                 }
+                rl_comment_input.setVisibility(View.VISIBLE);
                 break;
             case R.id.comment_send:
                 rl_comment_input.setVisibility(View.GONE);
@@ -172,7 +197,9 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
             String json = null;
             @Override
             protected Void doInBackground(Void... voids) {
-                String url = ConstantPool.COMMENT_SEND + "?id=" + id + "&comments=" + comments;
+                String nickName = PreferenceUtil.getUserInfo(SeaHotSpotInfoActivity.this).get("nickName");
+                String headPhoto = PreferenceUtil.getUserHeadphoto(SeaHotSpotInfoActivity.this);
+                String url = ConstantPool.COMMENT_SEND + "?id=" + id + "&comments=" + comments + "&userImage=" + headPhoto + "&nickName=" + nickName;
                 Response response = HttpUtils.getInstance().request(url);
                 try {
                     json = response.body().string();

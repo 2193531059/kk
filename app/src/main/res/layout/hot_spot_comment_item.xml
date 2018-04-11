@@ -5,7 +5,7 @@
                 android:background="#ffffff"
                 android:layout_height="wrap_content">
 
-    <ImageView
+    <com.administrator.seawindow.view.ImageCircleView
             android:id="@+id/icv_comment_item"
             android:src="@drawable/def_head"
             android:layout_width="35dp"
@@ -23,11 +23,11 @@
 
         <TextView
                 android:id="@+id/tv_comment_name"
-                android:textColor="#969696"
+                android:textColor="#4682B4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="匿名用户"
-                android:textSize="14sp"/>
+                android:textSize="10sp"/>
 
         <TextView
                 android:id="@+id/tv_comment_item"

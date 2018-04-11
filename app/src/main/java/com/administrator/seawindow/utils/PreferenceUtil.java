@@ -17,6 +17,7 @@ public class PreferenceUtil {
     private static String PASSWORD = "seaWindow.password";
     private static String PHONENUM = "seaWindow.phoneNum";
     private static String EMAIL = "seaWindow.email";
+    private static String HEAD_PHOTO = "seaWindow.headPhoto";
 
     public static void setLOGINSTATE(Context context, int id){
         SharedPreferences preferences = context.getSharedPreferences("pre", Context.MODE_PRIVATE);
@@ -42,6 +43,18 @@ public class PreferenceUtil {
         editor.putString(PASSWORD,password);
         editor.putString(EMAIL,email);
         editor.commit();
+    }
+
+    public static void setUserHeadphoto(Context context, String photoAdr){
+        SharedPreferences preferences = context.getSharedPreferences("pre", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(HEAD_PHOTO,photoAdr);
+        editor.commit();
+    }
+
+    public static String getUserHeadphoto(Context context){
+        SharedPreferences preferences = context.getSharedPreferences("pre", Context.MODE_PRIVATE);
+        return preferences.getString(HEAD_PHOTO, "");
     }
 
     public static HashMap<String, String> getUserInfo(Context context){

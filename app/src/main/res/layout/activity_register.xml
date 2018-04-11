@@ -93,14 +93,13 @@
                     app:iiv_icon="@string/gmd_mail_outline"
                     app:iiv_color="#0183E5"
                     app:iiv_size="20dp"/>
-                <com.administrator.seawindow.view.EditTextWithDel
+                <EditText
                     android:id="@+id/et_email_register"
                     android:layout_marginLeft="15dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/email_hint"
                     android:textColorHint="#D1D1D1"
-                    android:inputType="phone"
                     android:background="@null"
                     style="?android:attr/textViewStyle"
                     android:maxLines="1"/>

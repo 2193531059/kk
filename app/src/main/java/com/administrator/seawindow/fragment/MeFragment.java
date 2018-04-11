@@ -2,8 +2,11 @@ package com.administrator.seawindow.fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
@@ -17,6 +20,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -31,12 +35,16 @@ import com.administrator.seawindow.EditPictureActivity;
 import com.administrator.seawindow.LoginActivity;
 import com.administrator.seawindow.R;
 import com.administrator.seawindow.utils.ConstantPool;
+import com.administrator.seawindow.utils.EventBusEvent;
 import com.administrator.seawindow.utils.HttpUtils;
 import com.administrator.seawindow.utils.OpenActivityUtil;
 import com.administrator.seawindow.utils.PreferenceUtil;
 import com.administrator.seawindow.utils.ToastUtil;
 import com.administrator.seawindow.view.ImageCircleView;
+import com.squareup.picasso.Picasso;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -45,6 +53,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
+
 
 /**
  * Created by Administrator on 2018/4/3.
@@ -72,10 +83,16 @@ public class MeFragment extends Fragment implements View.OnClickListener{
     private final int PHOTO_PICKED_WITH_DATA = 3021;
     /* 用来标识请求照相功能的activity */
     private final int CAMERA_WITH_DATA = 1000;
+
+    private MyReciver myReciver;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mRootView = inflater.inflate(R.layout.fragment_me_layout, null);
+        myReciver = new MyReciver();
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConstantPool.UPLOAD_HEAD);
+        getActivity().registerReceiver(myReciver,filter);
         getData();
         initView(mRootView);
         return mRootView;
@@ -86,6 +103,7 @@ public class MeFragment extends Fragment implements View.OnClickListener{
         nickName = userInfo.get("nickName");
         phoneNum = userInfo.get("phoneNum");
         email = userInfo.get("email");
+        photoAdr = PreferenceUtil.getUserHeadphoto(getActivity());
     }
 
     private void initView(View view){
@@ -93,6 +111,15 @@ public class MeFragment extends Fragment implements View.OnClickListener{
         et_phone_info = view.findViewById(R.id.et_phone_info);
         et_email_info = view.findViewById(R.id.et_email_info);
         imageCircleView = view.findViewById(R.id.civ_info);
+        Log.e(TAG, "initView: photoAdr = " + photoAdr);
+        if (TextUtils.isEmpty(photoAdr)) {
+            Picasso.with(getActivity()).load(R.drawable.def_head).into(imageCircleView);
+        } else {
+            Random random = new Random(1000);
+            int rand = random.nextInt();
+            Picasso.with(getActivity()).load(ConstantPool.HOST + photoAdr + "?" + rand).into(imageCircleView);
+        }
+
         et_name_info.setText(nickName);
         et_phone_info.setText(phoneNum);
         et_email_info.setText(email);
@@ -166,12 +193,12 @@ public class MeFragment extends Fragment implements View.OnClickListener{
                 return;
             }
 
-            HashMap<String, Integer> params = new HashMap<>();
+            Map<String, Object> params = new HashMap<>();
             params.put("uid", userID);
 
             File file = new File(photoAdr);
 
-            HttpUtils.getInstance().doPostHeadPhoto(ConstantPool.UPLOAD_HEAD_PHOTO, params, file);
+            HttpUtils.getInstance().doPostHeadPhoto(getActivity(), ConstantPool.UPLOAD_HEAD_PHOTO, params, file);
 
         } else {
             Bundle bundle = new Bundle();
@@ -284,5 +311,28 @@ public class MeFragment extends Fragment implements View.OnClickListener{
         PreferenceUtil.loginOut(getActivity());
         OpenActivityUtil.openActivity(getActivity(), LoginActivity.class);
         getActivity().finish();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (myReciver != null) {
+            getActivity().unregisterReceiver(myReciver);
+        }
+    }
+
+    class MyReciver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals(ConstantPool.UPLOAD_HEAD)) {
+                String headphotoAdr = PreferenceUtil.getUserHeadphoto(getActivity());
+                Random random = new Random(1000);
+                int rand = random.nextInt();
+                Log.e(TAG, "onReceive: " + ConstantPool.HOST + headphotoAdr + "?" + rand);
+                Picasso.with(getActivity()).load(ConstantPool.HOST + headphotoAdr + "?" + rand)
+                        .into(imageCircleView);
+            }
+        }
     }
 }

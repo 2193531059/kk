@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.administrator.seawindow.bean.SeaHotSpotBean;
 import com.administrator.seawindow.listener.MyTextWatcher;
@@ -31,7 +32,8 @@ import okhttp3.Response;
 
 public class RegisterActivity extends Activity implements EditTextWithDel.MyClickListener, View.OnClickListener{
     private static final String TAG = "RegisterActivity";
-    private EditTextWithDel et_username_register, et_userphone_register, et_password_register, et_confirm_password_register, et_email_register;
+    private EditTextWithDel et_username_register, et_userphone_register, et_password_register, et_confirm_password_register;
+    private EditText et_email_register;
     private Button register_button;
     private MyTextWatcher mTextWatcher;
 
@@ -78,7 +80,6 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
         et_userphone_register.registerClickListener(this);
         et_password_register.registerClickListener(this);
         et_confirm_password_register.registerClickListener(this);
-        et_email_register.registerClickListener(this);
         register_button.setOnClickListener(this);
     }
 

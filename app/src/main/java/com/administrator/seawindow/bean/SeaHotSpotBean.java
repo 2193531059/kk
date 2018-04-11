@@ -16,13 +16,13 @@ public class SeaHotSpotBean implements Serializable {
     private String text;//热点文本
     private String source;//热点来源
     private String publishTime;//热点发表时间
-    private String[] comments;//评论
+    private List<CommentBean> comments;//评论
 
-    public String[] getComments() {
+    public List<CommentBean> getComments() {
         return comments;
     }
 
-    public void setComments(String[] comments) {
+    public void setComments(List<CommentBean> comments) {
         this.comments = comments;
     }
 

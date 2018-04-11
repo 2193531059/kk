@@ -23,6 +23,7 @@ import com.administrator.seawindow.R;
 import com.administrator.seawindow.SeaHotSpotInfoActivity;
 import com.administrator.seawindow.adapter.KeyWordFindAdapter;
 import com.administrator.seawindow.bean.ActivityBean;
+import com.administrator.seawindow.bean.CommentBean;
 import com.administrator.seawindow.bean.KeyWordBean;
 import com.administrator.seawindow.bean.SeaHotSpotBean;
 import com.administrator.seawindow.utils.ConstantPool;
@@ -124,20 +125,36 @@ public class FindFragment extends Fragment{
             protected void onPostExecute(Void aVoid) {
                 if (!TextUtils.isEmpty(json)) {
                     try {
-                        JSONObject object = new JSONObject(json);
-                        JSONArray array = object.getJSONArray("news");
-                        for(int i = 0;i<array.length();i++){
-                            JSONObject objChild = array.getJSONObject(i);
+                        JSONArray array = new JSONArray(json);
+                        for(int i = 0; i < array.length(); i++){
+                            JSONObject obj = array.getJSONObject(i);
+                            JSONObject oceanNews = obj.optJSONObject("oceanHotNews");
+                            int id = oceanNews.optInt("id");
+                            String image = oceanNews.optString("image");
+                            String publishTime = oceanNews.optString("publishTime");
+                            String source = oceanNews.optString("source");
+                            String text = oceanNews.optString("text");
+                            String title = oceanNews.optString("title");
+                            JSONArray comments = obj.optJSONArray("comments");
+                            List<CommentBean> com = new ArrayList<>();
+                            for(int j = 0;j<comments.length();j++){
+                                JSONObject comment = comments.optJSONObject(j);
+                                CommentBean commentBean = new CommentBean();
+                                commentBean.setImage(comment.optString("image"));
+                                commentBean.setNewsID(comment.optInt("newsId"));
+                                commentBean.setNickName(comment.optString("nickName"));
+                                commentBean.setText(comment.optString("text"));
+                                com.add(commentBean);
+                            }
+
                             SeaHotSpotBean bean = new SeaHotSpotBean();
-                            bean.setText(objChild.optString("text"));
-                            bean.setId(objChild.optInt("id"));
-                            bean.setImage(objChild.optString("image"));
-                            bean.setPublishTime(objChild.optString("publishTime"));
-                            bean.setSource(objChild.optString("source"));
-                            String comments = objChild.optString("comments");
-                            String[] strs = comments.split("-");
-                            bean.setComments(strs);
-                            bean.setTitle(objChild.optString("title"));
+                            bean.setText(text);
+                            bean.setTitle(title);
+                            bean.setComments(com);
+                            bean.setId(id);
+                            bean.setImage(image);
+                            bean.setPublishTime(publishTime);
+                            bean.setSource(source);
                             mList.add(bean);
                         }
                         new Handler().post(new Runnable() {

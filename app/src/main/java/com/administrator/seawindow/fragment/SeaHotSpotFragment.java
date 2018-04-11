@@ -20,13 +20,17 @@ import android.view.ViewGroup;
 import com.administrator.seawindow.R;
 import com.administrator.seawindow.SeaHotSpotInfoActivity;
 import com.administrator.seawindow.adapter.SeaHotSpotRecyclerAdapter;
+import com.administrator.seawindow.bean.CommentBean;
 import com.administrator.seawindow.bean.SeaHotSpotBean;
 import com.administrator.seawindow.utils.ConstantPool;
+import com.administrator.seawindow.utils.EventBusEvent;
 import com.administrator.seawindow.utils.HttpUtils;
 import com.administrator.seawindow.utils.OpenActivityUtil;
 import com.administrator.seawindow.view.VpSwipeRefreshLayout;
 import com.google.gson.Gson;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,13 +56,31 @@ public class SeaHotSpotFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_seahotspot_layout, null);
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this);
+        }
         initView(view);
         initData();
         setListener();
         return view;
     }
 
-    private void initData(){
+    @Subscribe
+    public void onServiceEvent(EventBusEvent eventBusEvent) {
+        String key = eventBusEvent.getEvent();
+        Log.e(TAG, "onServiceEvent: ");
+        switch (key) {
+            case EventBusEvent.RFRESH_SEA_HOTNEWS:
+                Log.e(TAG, "onServiceEvent: -------------------");
+                mList.clear();
+                mAdapter.getmData().clear();
+                getHotSpot();
+                break;
+        }
+
+    }
+
+    private void initData() {
         mList = new ArrayList<>();
 
         mAdapter = new SeaHotSpotRecyclerAdapter(mList, getActivity());
@@ -67,7 +89,7 @@ public class SeaHotSpotFragment extends Fragment {
             @Override
             public void onNewsClick(int position) {
                 SeaHotSpotBean bean = mList.get(position);
-                Log.e(TAG, "onNewsClick: bean = " + bean);
+                Log.e(TAG, "onNewsClick:---- " + bean.getImage());
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("bean", bean);
                 OpenActivityUtil.openActivity(getActivity(), bundle, SeaHotSpotInfoActivity.class);
@@ -77,7 +99,13 @@ public class SeaHotSpotFragment extends Fragment {
         getHotSpot();
     }
 
-    private void initView(View view){
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    private void initView(View view) {
         gridview_news = view.findViewById(R.id.gridview_news);
         sr_swpierefresh = view.findViewById(R.id.sr_swpierefresh);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -86,7 +114,7 @@ public class SeaHotSpotFragment extends Fragment {
         gridview_news.setHasFixedSize(true);
     }
 
-    private void setListener(){
+    private void setListener() {
         sr_swpierefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -103,14 +131,15 @@ public class SeaHotSpotFragment extends Fragment {
     }
 
     @SuppressLint("StaticFieldLeak")
-    private void getHotSpot(){
+    private void getHotSpot() {
         new AsyncTask<Void, Void, Void>() {
             String json = null;
+
             @Override
             protected Void doInBackground(Void... voids) {
                 Response response = HttpUtils.getInstance().request(ConstantPool.GET_HOT_SPOT);
                 try {
-                    if(response != null){
+                    if (response != null) {
                         json = response.body().string();
                         Log.e(TAG, "doInBackground:getHotSpot json = " + json);
                     }
@@ -126,28 +155,37 @@ public class SeaHotSpotFragment extends Fragment {
                 if (!TextUtils.isEmpty(json)) {
                     try {
                         JSONArray array = new JSONArray(json);
-                        for(int i = 0; i < array.length(); i++){
+                        for (int i = 0; i < array.length(); i++) {
                             JSONObject obj = array.getJSONObject(i);
-                            if (obj != null) {
-                                int id = obj.optInt("id");
-                                String image = obj.optString("image");
-                                String publishTime = obj.optString("publishTime");
-                                String source = obj.optString("source");
-                                String text = obj.optString("text");
-                                String title = obj.optString("title");
-                                String comments = obj.optString("comments");
-                                String[] splitComment = comments.split("-");
-
-                                SeaHotSpotBean bean = new SeaHotSpotBean();
-                                bean.setText(text);
-                                bean.setTitle(title);
-                                bean.setComments(splitComment);
-                                bean.setId(id);
-                                bean.setImage(image);
-                                bean.setPublishTime(publishTime);
-                                bean.setSource(source);
-                                mList.add(bean);
+                            JSONObject oceanNews = obj.optJSONObject("oceanHotNews");
+                            int id = oceanNews.optInt("id");
+                            String image = oceanNews.optString("image");
+                            Log.e(TAG, "onPostExecute: image = " + image);
+                            String publishTime = oceanNews.optString("publishTime");
+                            String source = oceanNews.optString("source");
+                            String text = oceanNews.optString("text");
+                            String title = oceanNews.optString("title");
+                            JSONArray comments = obj.optJSONArray("comments");
+                            List<CommentBean> com = new ArrayList<>();
+                            for (int j = 0; j < comments.length(); j++) {
+                                JSONObject comment = comments.optJSONObject(j);
+                                CommentBean commentBean = new CommentBean();
+                                commentBean.setImage(comment.optString("image"));
+                                commentBean.setNewsID(comment.optInt("newsId"));
+                                commentBean.setNickName(comment.optString("nickName"));
+                                commentBean.setText(comment.optString("text"));
+                                com.add(commentBean);
                             }
+
+                            SeaHotSpotBean bean = new SeaHotSpotBean();
+                            bean.setText(text);
+                            bean.setTitle(title);
+                            bean.setComments(com);
+                            bean.setId(id);
+                            bean.setImage(image);
+                            bean.setPublishTime(publishTime);
+                            bean.setSource(source);
+                            mList.add(bean);
                         }
                     } catch (JSONException e) {
                         Log.e(TAG, "onPostExecute:getHotSpot e = " + e.getMessage());

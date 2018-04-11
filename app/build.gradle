@@ -39,5 +39,6 @@ dependencies {
     compile 'com.mikepenz:iconics-core:2.8.2@aar'
     //Android 图标开源库
     compile 'com.mikepenz:google-material-typeface:3.0.1.0.original@aar'
+    compile 'org.greenrobot:eventbus:3.0.0'
     //Android 图标开源库
 }

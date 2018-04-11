@@ -112,10 +112,10 @@ public class HttpUtils {
         }
     }
 
-    public void doPostHeadPhoto(final String url, JSONObject jsonObject, final File file){
-
+    public void doPostHeadPhoto(final String url, Object params, final File file){
+        String      json        = new Gson().toJson(params);
         //建立body，然后设置这个body里面放的数据类型是什么。
-        RequestBody body = RequestBody.create(JSON,jsonObject.toString());
+        RequestBody body = RequestBody.create(JSON,json);
         //建立请求
         Request request = new Request.Builder().post(body).url(url).build();
         //定义Call

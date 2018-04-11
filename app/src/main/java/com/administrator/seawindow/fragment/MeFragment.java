@@ -166,16 +166,12 @@ public class MeFragment extends Fragment implements View.OnClickListener{
                 return;
             }
 
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("uid", userID);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            HashMap<String, Integer> params = new HashMap<>();
+            params.put("uid", userID);
 
             File file = new File(photoAdr);
 
-            HttpUtils.getInstance().doPostHeadPhoto(ConstantPool.UPLOAD_HEAD_PHOTO, jsonObject, file);
+            HttpUtils.getInstance().doPostHeadPhoto(ConstantPool.UPLOAD_HEAD_PHOTO, params, file);
 
         } else {
             Bundle bundle = new Bundle();

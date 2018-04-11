@@ -57,6 +57,12 @@ public class SeaKnowledgeFragment extends Fragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_seaknowledge_layout, null);
         groupList = new ArrayList<>();
+        groupList.add("海洋奥秘");
+        groupList.add("海洋生态");
+        groupList.add("海洋资源");
+        groupList.add("海洋国防");
+        groupList.add("远洋航海");
+        groupList.add("滨海旅游");
         mList = new ArrayList<>();
         initView(view);
         getData();
@@ -68,9 +74,6 @@ public class SeaKnowledgeFragment extends Fragment implements View.OnClickListen
         sr_swpierefresh = view.findViewById(R.id.sr_swpierefresh);
         mListView = view.findViewById(R.id.expandable_scan_phone);
         mAdapter = new PinnedHeaderPhoneExpandableAdapter(getActivity(), groupList, mList, mListView);
-        //设置悬浮头部
-        mListView.setHeaderView((getActivity().getLayoutInflater().inflate(R.layout.knowledge_group_a,
-                mListView, false)));
         mListView.setAdapter(mAdapter);
     }
 

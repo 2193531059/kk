@@ -45,13 +45,18 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
     private RecyclerView commentRecycler;
     private String title, source, time, text;
     private int id;
-    private ImageView comment;
+    private RelativeLayout comment;
+    private ImageView icon_comment;
+    private ImageView image_hot;
+    private TextView comment_count;
     private EditText comment_input;
     private RelativeLayout rl_comment_input;
     private Button comment_send;
     private MyTextWatcher myTextWatcher;
     private CommentListAdapter mAdapter;
     private List<String> mList;
+
+    private boolean isCommentListShow = false;
 
     private final int SEND_COMMENT_SUCCESS = 0;
     @SuppressLint("HandlerLeak")
@@ -78,7 +83,7 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sea_hot_spot);
-
+        initView();
         Bundle bundle = getIntent().getBundleExtra("bundle");
         SeaHotSpotBean bean = (SeaHotSpotBean) bundle.getSerializable("bean");
         title = bean.getTitle();
@@ -86,23 +91,26 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
         time = bean.getPublishTime();
         text = bean.getText();
         id = bean.getId();
-        mList = new ArrayList<>();
+
         String[] comments = bean.getComments();
         for(int i = 0;i<comments.length;i++){
             mList.add(comments[i]);
         }
 
-        initView();
         setData();
         setListener();
     }
 
     private void initView(){
+        mList = new ArrayList<>();
         title_bar = findViewById(R.id.title_bar);
+        image_hot = findViewById(R.id.image_hot);
         tv_title = findViewById(R.id.title);
         tv_source = findViewById(R.id.source);
         tv_time = findViewById(R.id.time);
         tv_text = findViewById(R.id.text);
+        icon_comment = findViewById(R.id.icon_comment);
+        comment_count = findViewById(R.id.comment_count);
         commentRecycler = findViewById(R.id.commentList);
         comment = findViewById(R.id.comment);
         comment_input = findViewById(R.id.comment_content);
@@ -140,6 +148,13 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
         switch (view.getId()){
             case R.id.comment:
                 rl_comment_input.setVisibility(View.VISIBLE);
+                if (isCommentListShow) {
+                    commentRecycler.setVisibility(View.GONE);
+                    isCommentListShow = false;
+                } else {
+                    commentRecycler.setVisibility(View.VISIBLE);
+                    isCommentListShow = true;
+                }
                 break;
             case R.id.comment_send:
                 rl_comment_input.setVisibility(View.GONE);

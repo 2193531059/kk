@@ -1,5 +1,7 @@
 package com.administrator.seawindow.bean;
 
+import com.administrator.seawindow.utils.ConstantPool;
+
 import java.io.Serializable;
 
 /**
@@ -9,7 +11,16 @@ import java.io.Serializable;
 public class SeaKnowledgeBean implements Serializable{
     private int id;
     private String cateName;
+    private String imageUrl;
     private String text;
+
+    public String getImageUrl() {
+        return ConstantPool.HOST + imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     public int getId() {
         return id;

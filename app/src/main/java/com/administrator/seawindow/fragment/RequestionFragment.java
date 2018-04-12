@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,9 +20,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.administrator.seawindow.R;
-import com.administrator.seawindow.bean.CommentBean;
 import com.administrator.seawindow.bean.QuestionBean;
-import com.administrator.seawindow.bean.SeaHotSpotBean;
 import com.administrator.seawindow.utils.ConstantPool;
 import com.administrator.seawindow.utils.HttpUtils;
 import com.administrator.seawindow.utils.ToastUtil;
@@ -44,8 +43,11 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
     private static final String TAG = "RequestionFragment";
     private List<QuestionBean> mList;
     private List<QuestionBean> mWrongList;
+    private List<QuestionBean> mRightList;
 
     private Button startQuestion;
+    private Button end_check_requestion;
+    private Button research;
     private LinearLayout question_part;
     private LinearLayout loading_alert;
     private LinearLayout bottomPart;
@@ -53,11 +55,15 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
     private Button pre_question, next_question, end_question;
     private RadioButton radioButton1, radioButton2, radioButton3, radioButton4, radioButton5;
     private TextView question;
+    private AlertDialog alertDialog;
+    private LinearLayout right_answer_part;
+    private TextView right_answer;
 
     private int questionCount;
     private int currentPosition;
     private int right;
     private int wrong;
+    private boolean isCheckWrong = false;
 
     private final int GET_QUESTION_SUCCESS = 0;
     private final int GET_QUESTION_FAILED = 1;
@@ -92,8 +98,17 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
         loading_alert = view.findViewById(R.id.loading_alert);
         loading_alert.setVisibility(View.VISIBLE);
 
+        research = view.findViewById(R.id.research);
+        research.setOnClickListener(this);
+
+        right_answer_part = view.findViewById(R.id.right_answer_part);
+        right_answer_part.setVisibility(View.GONE);
+        right_answer = view.findViewById(R.id.right_answer);
+
         bottomPart = view.findViewById(R.id.bottom_part);
         bottomPart.setVisibility(View.GONE);
+        end_check_requestion = view.findViewById(R.id.end_check_requestion);
+        end_check_requestion.setOnClickListener(this);
 
         startQuestion = view.findViewById(R.id.start_question);
         startQuestion.setVisibility(View.GONE);
@@ -106,7 +121,7 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 QuestionBean bean = null;
-                if (currentPosition < 0 || currentPosition >= mList.size()) {
+                if (currentPosition > 0 || currentPosition < mList.size()) {
                     bean = mList.get(currentPosition);
                 }
                 if (bean != null) {
@@ -116,11 +131,15 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
                         case R.id.radio_1:
                             if (radioButton1.isChecked()) {
                                 chooseAnser = "A";
+//                                right++;
+//                                mRightList.add(bean);
                             }
                             break;
                         case R.id.radio_2:
                             if (radioButton2.isChecked()) {
                                 chooseAnser = "B";
+//                                wrong++;
+//                                mWrongList.add(bean);
                             }
                             break;
                         case R.id.radio_3:
@@ -135,7 +154,7 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
                             break;
                         case R.id.radio_5:
                             if (radioButton5.isChecked()) {
-                                chooseAnser = "F";
+                                chooseAnser = "E";
                             }
                             break;
                     }
@@ -165,6 +184,35 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
     private void initData(){
         mList = new ArrayList<>();
         mWrongList = new ArrayList<>();
+        mRightList = new ArrayList<>();
+
+//        QuestionBean bean1 = new QuestionBean();
+//        bean1.setQuestion("海洋中最大的动物是什么？");
+//        List<String> answers1 = new ArrayList<>();
+//        answers1.add("鲨鱼");
+//        answers1.add("海象");
+//        answers1.add("蓝鲸");
+//        bean1.setAnswer(answers1);
+//
+//        QuestionBean bean2 = new QuestionBean();
+//        bean2.setQuestion("海龟生蛋是在什么地方？");
+//        List<String> answers2 = new ArrayList<>();
+//        answers2.add("海水里");
+//        answers2.add("沙滩上");
+//        answers2.add("海草");
+//        bean2.setAnswer(answers2);
+//
+//        QuestionBean bean3 = new QuestionBean();
+//        bean3.setQuestion("珊瑚是？");
+//        List<String> answers3 = new ArrayList<>();
+//        answers3.add("动物");
+//        answers3.add("植物");
+//        answers3.add("都不是");
+//        bean3.setAnswer(answers3);
+//
+//        mList.add(bean1);
+//        mList.add(bean2);
+//        mList.add(bean3);
 
         getQuestionData();
     }
@@ -173,18 +221,50 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.start_question:
+                if (mList.size() == 0) {
+                    ToastUtil.show(getActivity(), R.string.no_question);
+                    research.setVisibility(View.VISIBLE);
+                    startQuestion.setVisibility(View.GONE);
+                    return;
+                }
+                research.setVisibility(View.GONE);
                 question_part.setVisibility(View.VISIBLE);
                 bottomPart.setVisibility(View.VISIBLE);
                 pre_question.setVisibility(View.GONE);
                 startQuestion.setVisibility(View.GONE);
                 questionCount = mList.size();
                 currentPosition = 0;
+                if (isCheckWrong) {
+                    right_answer_part.setVisibility(View.VISIBLE);
+                    end_check_requestion.setVisibility(View.VISIBLE);
+                    end_question.setVisibility(View.GONE);
+                    Log.e(TAG, "onClick: currentPosition = " + currentPosition);
+                    Log.e(TAG, "onClick: mList = " + mList.size());
+                    if (currentPosition == questionCount - 1) {
+                        end_check_requestion.setVisibility(View.VISIBLE);
+                    } else {
+                        end_check_requestion.setVisibility(View.VISIBLE);
+                        next_question.setVisibility(View.VISIBLE);
+                        pre_question.setVisibility(View.GONE);
+                    }
+                } else {
+                    right_answer_part.setVisibility(View.GONE);
+                    end_check_requestion.setVisibility(View.GONE);
+                }
                 setQuestionView();
                 break;
             case R.id.pre_question:
                 currentPosition--;
                 if (currentPosition < 0) {
                     return;
+                }
+                if (isCheckWrong) {
+                    right_answer_part.setVisibility(View.VISIBLE);
+                    end_check_requestion.setVisibility(View.VISIBLE);
+                    end_question.setVisibility(View.GONE);
+                } else {
+                    right_answer_part.setVisibility(View.GONE);
+                    end_check_requestion.setVisibility(View.GONE);
                 }
                 if (currentPosition == 0) {
                     pre_question.setVisibility(View.GONE);
@@ -202,10 +282,21 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
                 if (currentPosition >= questionCount) {
                     return;
                 }
+                if (isCheckWrong) {
+                    right_answer_part.setVisibility(View.VISIBLE);
+                    end_check_requestion.setVisibility(View.VISIBLE);
+                } else {
+                    right_answer_part.setVisibility(View.GONE);
+                    end_check_requestion.setVisibility(View.GONE);
+                }
                 if (currentPosition == (questionCount - 1)) {
                     pre_question.setVisibility(View.VISIBLE);
                     next_question.setVisibility(View.GONE);
-                    end_question.setVisibility(View.VISIBLE);
+                    if (isCheckWrong) {
+                        end_question.setVisibility(View.GONE);
+                    } else {
+                        end_question.setVisibility(View.VISIBLE);
+                    }
                 } else {
                     pre_question.setVisibility(View.VISIBLE);
                     next_question.setVisibility(View.VISIBLE);
@@ -215,6 +306,32 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
                 break;
             case R.id.end_answer:
                 showResultView();
+                break;
+            case R.id.end_check_requestion:
+                loading_alert.setVisibility(View.VISIBLE);
+                bottomPart.setVisibility(View.GONE);
+                startQuestion.setVisibility(View.GONE);
+                question_part.setVisibility(View.GONE);
+                mList.clear();
+                mWrongList.clear();
+                mRightList.clear();
+                right = 0;
+                wrong = 0;
+                isCheckWrong = false;
+                getQuestionData();
+                break;
+            case R.id.research:
+                loading_alert.setVisibility(View.VISIBLE);
+                bottomPart.setVisibility(View.GONE);
+                startQuestion.setVisibility(View.GONE);
+                question_part.setVisibility(View.GONE);
+                mList.clear();
+                mWrongList.clear();
+                mRightList.clear();
+                right = 0;
+                wrong = 0;
+                isCheckWrong = false;
+                getQuestionData();
                 break;
         }
     }
@@ -228,6 +345,11 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
         radioButton5.setChecked(false);
 
         QuestionBean bean = mList.get(currentPosition);
+        if (isCheckWrong) {
+            String rightAnswer = bean.getRightAnswer();
+            String chooseAnswer = bean.getChooseAnswer();
+            right_answer.setText(getString(R.string.right_answer) + rightAnswer + getString(R.string.choose_user) + chooseAnswer);
+        }
         question.setText(bean.getQuestion());
         List<String> answers = bean.getAnswer();
         int size = answers.size();
@@ -271,7 +393,65 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
     }
 
     private void showResultView(){
+        alertDialog = new AlertDialog.Builder(getActivity()).create();
+        alertDialog.show();
+        if (alertDialog.getWindow() == null) return;
+        alertDialog.getWindow().setContentView(R.layout.pop_user);//设置弹出框加载的布局
+        TextView msg = alertDialog.findViewById(R.id.tv_msg);
+        Button reanswer = alertDialog.findViewById(R.id.btn_reanswer);
 
+        Button checkWrong = alertDialog.findViewById(R.id.btn_checkWrong);
+        if (msg == null || reanswer == null || checkWrong == null) return;
+
+        msg.setText(getString(R.string.question_message) + right + getString(R.string.item_1) + wrong + getString(R.string.item_2));
+
+        reanswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                loading_alert.setVisibility(View.VISIBLE);
+                bottomPart.setVisibility(View.GONE);
+                startQuestion.setVisibility(View.GONE);
+                question_part.setVisibility(View.GONE);
+                mList.clear();
+                mWrongList.clear();
+                mRightList.clear();
+                right = 0;
+                wrong = 0;
+                isCheckWrong = false;
+                getQuestionData();
+            }
+        });
+        checkWrong.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (wrong == 0) {
+                    ToastUtil.show(getActivity(), R.string.no_wrong);
+                    alertDialog.dismiss();
+                    loading_alert.setVisibility(View.VISIBLE);
+                    bottomPart.setVisibility(View.GONE);
+                    startQuestion.setVisibility(View.GONE);
+                    question_part.setVisibility(View.GONE);
+                    mList.clear();
+                    mWrongList.clear();
+                    mRightList.clear();
+                    right = 0;
+                    wrong = 0;
+                    isCheckWrong = false;
+                    getQuestionData();
+                } else {
+                    alertDialog.dismiss();
+                    mList.clear();
+                    mList.addAll(mWrongList);
+                    mWrongList.clear();
+                    mRightList.clear();
+                    wrong = 0;
+                    right = 0;
+                    isCheckWrong = true;
+                    startQuestion.performClick();
+                }
+            }
+        });
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -343,8 +523,6 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "doInBackground:getQuestion e = " + e);
-                    Message msg = mHandler.obtainMessage(GET_QUESTION_FAILED);
-                    mHandler.sendMessage(msg);
                     e.printStackTrace();
                 }
                 return null;

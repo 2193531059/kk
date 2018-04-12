@@ -44,6 +44,15 @@
         android:text="@string/start_requestion"
         android:layout_gravity="center"/>
 
+    <Button
+        android:id="@+id/research"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="80dp"
+        android:text="@string/research"
+        android:layout_gravity="center"/>
+
     <LinearLayout
         android:id="@+id/question_part"
         android:layout_width="match_parent"
@@ -92,6 +101,21 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/right_answer_part"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/right_answer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/bottom_part"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -125,6 +149,16 @@
             android:background="@drawable/button_noclickable_shape"
             android:gravity="center"
             android:text="@string/end_question" />
+
+        <Button
+            android:id="@+id/end_check_requestion"
+            android:layout_width="80dp"
+            android:layout_height="33dp"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"
+            android:background="@drawable/button_noclickable_shape"
+            android:gravity="center"
+            android:text="@string/question_reanswer" />
 
     </LinearLayout>
 

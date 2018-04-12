@@ -62,8 +62,21 @@
     <string name="ocean_sailing">远洋航海</string>
     <string name="coastal_tourism">滨海旅游</string>
     <string name="start_requestion">开始答题</string>
+    <string name="research">重新搜索</string>
     <string name="searching_question">正在搜索题库...</string>
     <string name="pre_question">上一题</string>
     <string name="next_question">下一题</string>
     <string name="end_question">结束答题</string>
+    <string name="hint">提示</string>
+    <string name="close">关闭</string>
+    <string name="question_check">查看错题</string>
+    <string name="question_reanswer">重新答题</string>
+    <string name="lable_ok">确定</string>
+    <string name="item_1">道题，答错</string>
+    <string name="item_2">道题。</string>
+    <string name="question_message">您答对了</string>
+    <string name="right_answer">正确答案为：</string>
+    <string name="choose_user">， 您选择的是：</string>
+    <string name="no_wrong">您没有答错任何一道题，将为您重新搜索题库。</string>
+    <string name="no_question">没有搜索到题目，请重新搜索</string>
 </resources>

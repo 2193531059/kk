@@ -9,7 +9,25 @@ import java.util.List;
 public class QuestionBean{
     private int id;
     private String question;
+    private String rightAnswer;
+    private String chooseAnswer;
     private List<String> answers;
+
+    public String getChooseAnswer() {
+        return chooseAnswer;
+    }
+
+    public void setChooseAnswer(String chooseAnswer) {
+        this.chooseAnswer = chooseAnswer;
+    }
+
+    public String getRightAnswer() {
+        return rightAnswer;
+    }
+
+    public void setRightAnswer(String rightAnswer) {
+        this.rightAnswer = rightAnswer;
+    }
 
     public int getId() {
         return id;

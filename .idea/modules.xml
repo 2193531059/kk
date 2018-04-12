@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/SeaWindow.iml" filepath="$PROJECT_DIR$/SeaWindow.iml" />
       <module fileurl="file://E:\PrivateSeaTheamProgram\kk\SeaWindow.iml" filepath="E:\PrivateSeaTheamProgram\kk\SeaWindow.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://E:\PrivateSeaTheamProgram\kk\app\app.iml" filepath="E:\PrivateSeaTheamProgram\kk\app\app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kk.iml" filepath="$PROJECT_DIR$/kk.iml" />
+      <module fileurl="file://E:\SeaWindow\kk.iml" filepath="E:\SeaWindow\kk.iml" />
     </modules>
   </component>
 </project>

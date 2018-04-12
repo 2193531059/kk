@@ -67,6 +67,8 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
 
     private final int GET_QUESTION_SUCCESS = 0;
     private final int GET_QUESTION_FAILED = 1;
+    private final int ANSWER_RIGHT = 3;
+    private final int ANSWER_WRONG = 4;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
@@ -80,6 +82,16 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
                 case GET_QUESTION_FAILED:
                     loading_alert.setVisibility(View.GONE);
                     startQuestion.setVisibility(View.VISIBLE);
+                    break;
+                case ANSWER_RIGHT:
+                    QuestionBean beanRight = mList.get(currentPosition);
+                    right++;
+                    mRightList.add(beanRight);
+                    break;
+                case ANSWER_WRONG:
+                    QuestionBean beanWrong = mList.get(currentPosition);
+                    wrong++;
+                    mWrongList.add(beanWrong);
                     break;
             }
         }
@@ -131,15 +143,11 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
                         case R.id.radio_1:
                             if (radioButton1.isChecked()) {
                                 chooseAnser = "A";
-//                                right++;
-//                                mRightList.add(bean);
                             }
                             break;
                         case R.id.radio_2:
                             if (radioButton2.isChecked()) {
                                 chooseAnser = "B";
-//                                wrong++;
-//                                mWrongList.add(bean);
                             }
                             break;
                         case R.id.radio_3:
@@ -159,6 +167,7 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
                             break;
                     }
                     if (!TextUtils.isEmpty(chooseAnser)) {
+                        bean.setChooseAnswer(chooseAnser);
                         checkQuestion(id, chooseAnser);
                     }
                 }
@@ -250,6 +259,11 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
                 } else {
                     right_answer_part.setVisibility(View.GONE);
                     end_check_requestion.setVisibility(View.GONE);
+                    if (currentPosition == questionCount - 1) {
+                        end_question.setVisibility(View.VISIBLE);
+                    } else {
+                        next_question.setVisibility(View.VISIBLE);
+                    }
                 }
                 setQuestionView();
                 break;
@@ -312,6 +326,7 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
                 bottomPart.setVisibility(View.GONE);
                 startQuestion.setVisibility(View.GONE);
                 question_part.setVisibility(View.GONE);
+                right_answer.setVisibility(View.GONE);
                 mList.clear();
                 mWrongList.clear();
                 mRightList.clear();
@@ -348,6 +363,7 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
         if (isCheckWrong) {
             String rightAnswer = bean.getRightAnswer();
             String chooseAnswer = bean.getChooseAnswer();
+            right_answer.setVisibility(View.VISIBLE);
             right_answer.setText(getString(R.string.right_answer) + rightAnswer + getString(R.string.choose_user) + chooseAnswer);
         }
         question.setText(bean.getQuestion());
@@ -491,6 +507,7 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
                             bean.setAnswer(answers);
                             bean.setId(obj.optInt("id"));
                             bean.setQuestion(obj.optString("questions"));
+                            bean.setRightAnswer(obj.optString("rightAnswers"));
                             mList.add(bean);
                         }
                         Message msg = mHandler.obtainMessage(GET_QUESTION_SUCCESS);
@@ -531,9 +548,19 @@ public class RequestionFragment extends Fragment implements View.OnClickListener
             @Override
             protected void onPostExecute(Void aVoid) {
                 if (!TextUtils.isEmpty(json)) {
-
-                } else {
-
+                    try {
+                        JSONObject obj = new JSONObject(json);
+                        String mes = obj.optString("mes");
+                        if (mes.contains("错误")) {
+                            Message msg = mHandler.obtainMessage(ANSWER_WRONG);
+                            mHandler.sendMessage(msg);
+                        } else if (mes.contains("正确")) {
+                            Message msg = mHandler.obtainMessage(ANSWER_RIGHT);
+                            mHandler.sendMessage(msg);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }.execute();

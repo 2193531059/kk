@@ -4,8 +4,8 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     //联网
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     //读取外置存储卡
@@ -67,25 +67,11 @@
         <activity
             android:name=".SeaHotSpotInfoActivity"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".sea_knowledge.SeaSecretActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".sea_knowledge.SeaZoologyActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".sea_knowledge.SeaResouceActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".sea_knowledge.SeaDefenceActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".sea_knowledge.OceanSailingActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".sea_knowledge.CoastalTourismActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".EditPictureActivity"></activity>
+        <activity android:name=".EditPictureActivity" />
+        <activity android:name=".sea_knowledge.SeaKnowledgeInfoActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
     </application>
 
 </manifest>

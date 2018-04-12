@@ -1,6 +1,7 @@
 package com.administrator.seawindow.adapter;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.res.ResourcesCompat;
 import android.text.TextUtils;
@@ -40,6 +41,13 @@ public class PinnedHeaderPhoneExpandableAdapter extends BaseExpandableListAdapte
         mInflater = LayoutInflater.from(mContext);
     }
 
+    public void addChild(ArrayList<SeaKnowledgeBean> list) {
+        child.add(list);
+
+        notifyDataSetChanged();
+
+    }
+
     @Override
     public Object getChild(int groupPosition, int childPosition) {
         return child.get(groupPosition).get(childPosition);
@@ -60,6 +68,9 @@ public class PinnedHeaderPhoneExpandableAdapter extends BaseExpandableListAdapte
     @Override
     public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
         ArrayList<SeaKnowledgeBean> list = child.get(groupPosition);
+        if (childPosition >= list.size()) {
+            return null;
+        }
         SeaKnowledgeBean bean = list.get(childPosition);
 
         final ViewHolder holder;
@@ -92,6 +103,12 @@ public class PinnedHeaderPhoneExpandableAdapter extends BaseExpandableListAdapte
 
     @Override
     public int getChildrenCount(int groupPosition) {
+        if (child == null) {
+            return 0;
+        }
+        if (groupPosition >= child.size()) {
+            return 0;
+        }
         if (child.size() != 0) {
             return child.get(groupPosition).size();
         } else {
@@ -218,6 +235,9 @@ public class PinnedHeaderPhoneExpandableAdapter extends BaseExpandableListAdapte
 
     @Override
     public void setGroupClickStatus(int groupPosition, int status) {
+        if (mListener != null) {
+            mListener.onGroupExpand(groupPosition);
+        }
         groupStatusMap.put(groupPosition, status);
     }
 
@@ -232,6 +252,7 @@ public class PinnedHeaderPhoneExpandableAdapter extends BaseExpandableListAdapte
 
     public interface OnItemClickListener {
         void OnItemClick(int groupPosition, int childPosition);
+        void onGroupExpand(int groupPosition);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {

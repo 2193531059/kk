@@ -74,37 +74,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
-            android:text="@string/login"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:textColor="#ffffff"
-            android:paddingBottom="10dp"
-            android:textAllCaps="false"
-            android:background="@drawable/loginselector"
-            android:id="@+id/login_button"/>
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:layout_height="wrap_content">
-            <Button
+                android:text="@string/login"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:textColor="#ffffff"
+                android:paddingBottom="10dp"
+                android:textAllCaps="false"
+                android:background="@drawable/loginselector"
+                android:id="@+id/login_button"/>
+
+        <Button
                 android:id="@+id/bt_login_register"
                 android:text="@string/register_login"
-                android:textColor="#0183E5"
-                android:textAllCaps="false"
-                style="?android:attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"/>
-            <Button
-                android:id="@+id/bt_forget_password"
-                android:text="@string/forget_password"
-                android:layout_width="wrap_content"
-                android:textColor="#0183E5"
+                android:layout_height="60dp"
+                android:textColor="#ffffff"
+                android:paddingBottom="10dp"
+                android:layout_marginTop="10dp"
                 android:textAllCaps="false"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_alignParentRight="true"
-                android:layout_height="40dp"/>
-        </RelativeLayout>
+                android:background="@drawable/loginselector"/>
+
     </LinearLayout>
 
 </RelativeLayout>

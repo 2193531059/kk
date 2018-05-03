@@ -15,7 +15,6 @@ import com.administrator.seawindow.utils.ConstantPool;
 import com.administrator.seawindow.utils.HttpUtils;
 import com.administrator.seawindow.utils.OpenActivityUtil;
 import com.administrator.seawindow.utils.PreferenceUtil;
-import com.administrator.seawindow.utils.ServiceUtil;
 import com.administrator.seawindow.utils.ToastUtil;
 import com.administrator.seawindow.view.EditTextWithDel;
 
@@ -30,7 +29,7 @@ import okhttp3.Response;
 public class LoginActivity extends Activity implements View.OnClickListener, EditTextWithDel.MyClickListener{
     private static final String TAG = "LoginActivity";
     private EditTextWithDel mobile_text, password_text;
-    private Button login_button, bt_login_register, bt_forget_password;
+    private Button login_button, bt_login_register;
     private String nickName;
     private String phoneNum;
     private String password;
@@ -83,13 +82,11 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
 
         login_button = findViewById(R.id.login_button);
         bt_login_register = findViewById(R.id.bt_login_register);
-        bt_forget_password = findViewById(R.id.bt_forget_password);
     }
 
     private void setListener(){
         login_button.setOnClickListener(this);
         bt_login_register.setOnClickListener(this);
-        bt_forget_password.setOnClickListener(this);
         mobile_text.registerClickListener(this);
         password_text.registerClickListener(this);
     }

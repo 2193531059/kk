@@ -78,7 +78,7 @@ public class PreferenceUtil {
         editor.putString(PHONENUM,"");
         editor.putString(PASSWORD,"");
         editor.putString(EMAIL,"");
-        editor.putBoolean(LOGINSTATE, false);
+        editor.putInt(LOGINSTATE, -1);
         editor.commit();
     }
 }

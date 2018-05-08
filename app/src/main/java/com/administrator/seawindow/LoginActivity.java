@@ -11,12 +11,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import android.widget.EditText;
 import com.administrator.seawindow.utils.ConstantPool;
 import com.administrator.seawindow.utils.HttpUtils;
 import com.administrator.seawindow.utils.OpenActivityUtil;
 import com.administrator.seawindow.utils.PreferenceUtil;
 import com.administrator.seawindow.utils.ToastUtil;
-import com.administrator.seawindow.view.EditTextWithDel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,9 +26,9 @@ import java.util.HashMap;
 
 import okhttp3.Response;
 
-public class LoginActivity extends Activity implements View.OnClickListener, EditTextWithDel.MyClickListener{
+public class LoginActivity extends Activity implements View.OnClickListener{
     private static final String TAG = "LoginActivity";
-    private EditTextWithDel mobile_text, password_text;
+    private EditText mobile_text, password_text;
     private Button login_button, bt_login_register;
     private String nickName;
     private String phoneNum;
@@ -87,8 +87,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
     private void setListener(){
         login_button.setOnClickListener(this);
         bt_login_register.setOnClickListener(this);
-        mobile_text.registerClickListener(this);
-        password_text.registerClickListener(this);
     }
 
     @Override
@@ -111,11 +109,6 @@ public class LoginActivity extends Activity implements View.OnClickListener, Edi
                 OpenActivityUtil.openActivity(this, RegisterActivity.class);
                 break;
         }
-    }
-
-    @Override
-    public void isClick() {
-
     }
 
     private boolean isMobile(String number){

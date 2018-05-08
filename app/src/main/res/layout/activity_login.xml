@@ -24,7 +24,7 @@
             android:layout_width="wrap_content"
             android:src="@drawable/lcon2"
             android:layout_height="wrap_content"/>
-        <com.administrator.seawindow.view.EditTextWithDel
+        <EditText
             android:id="@+id/mobile_text"
             android:layout_marginLeft="15dp"
             android:layout_width="match_parent"
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/lcon_1"
             />
-        <com.administrator.seawindow.view.EditTextWithDel
+        <EditText
             android:id="@+id/password_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

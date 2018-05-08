@@ -12,27 +12,22 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.administrator.seawindow.bean.SeaHotSpotBean;
 import com.administrator.seawindow.listener.MyTextWatcher;
 import com.administrator.seawindow.utils.ConstantPool;
 import com.administrator.seawindow.utils.HttpUtils;
 import com.administrator.seawindow.utils.OpenActivityUtil;
-import com.administrator.seawindow.utils.PreferenceUtil;
 import com.administrator.seawindow.utils.ToastUtil;
-import com.administrator.seawindow.view.EditTextWithDel;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.util.HashMap;
 
 import okhttp3.Response;
 
-public class RegisterActivity extends Activity implements EditTextWithDel.MyClickListener, View.OnClickListener{
+public class RegisterActivity extends Activity implements View.OnClickListener{
     private static final String TAG = "RegisterActivity";
-    private EditTextWithDel et_username_register, et_userphone_register, et_password_register, et_confirm_password_register;
+    private EditText et_username_register, et_userphone_register, et_password_register, et_confirm_password_register;
     private EditText et_email_register;
     private Button register_button;
     private MyTextWatcher mTextWatcher;
@@ -76,16 +71,7 @@ public class RegisterActivity extends Activity implements EditTextWithDel.MyClic
     }
 
     private void setListener(){
-        et_username_register.registerClickListener(this);
-        et_userphone_register.registerClickListener(this);
-        et_password_register.registerClickListener(this);
-        et_confirm_password_register.registerClickListener(this);
         register_button.setOnClickListener(this);
-    }
-
-    @Override
-    public void isClick() {
-
     }
 
     @SuppressLint("StaticFieldLeak")

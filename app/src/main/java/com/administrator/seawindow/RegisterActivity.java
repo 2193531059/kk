@@ -13,10 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.administrator.seawindow.listener.MyTextWatcher;
-import com.administrator.seawindow.utils.ConstantPool;
-import com.administrator.seawindow.utils.HttpUtils;
-import com.administrator.seawindow.utils.OpenActivityUtil;
-import com.administrator.seawindow.utils.ToastUtil;
+import com.administrator.seawindow.utils.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,10 +27,14 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
     private EditText et_username_register, et_userphone_register, et_password_register, et_confirm_password_register;
     private EditText et_email_register;
     private Button register_button;
-    private MyTextWatcher mTextWatcher;
+//    private MyTextWatcher mTextWatcher;
+    private DialogUtil dialogUtil;
 
     private final int REGISTER_SUCCESS = 0;
     private final int REGISTER_FAILED = 1;
+    private final int REGISTER_STARTED = 2;
+    private final int NET_ERROR = 3;
+    private final int SERVICE_ERROR = 4;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
@@ -41,11 +42,45 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case REGISTER_SUCCESS:
+                    if (dialogUtil != null) {
+                        if (dialogUtil.isDialogShowing()) {
+                            dialogUtil.dismissDialog();
+                        }
+                    }
                     OpenActivityUtil.openActivity(RegisterActivity.this, LoginActivity.class);
                     finish();
                     break;
                 case REGISTER_FAILED:
+                    if (dialogUtil != null) {
+                        if (dialogUtil.isDialogShowing()) {
+                            dialogUtil.dismissDialog();
+                        }
+                    }
                     ToastUtil.show(RegisterActivity.this, R.string.phone_is_registered);
+                    break;
+                case REGISTER_STARTED:
+                    if (dialogUtil == null) {
+                        dialogUtil = new DialogUtil(RegisterActivity.this, null, false);
+                    }
+                    if (!dialogUtil.isDialogShowing()) {
+                        dialogUtil.showDialog();
+                    }
+                    break;
+                case NET_ERROR:
+                    if (dialogUtil != null) {
+                        if (dialogUtil.isDialogShowing()) {
+                            dialogUtil.dismissDialog();
+                        }
+                    }
+                    ToastUtil.show(RegisterActivity.this, R.string.login_net_error);
+                    break;
+                case SERVICE_ERROR:
+                    if (dialogUtil != null) {
+                        if (dialogUtil.isDialogShowing()) {
+                            dialogUtil.dismissDialog();
+                        }
+                    }
+                    ToastUtil.show(RegisterActivity.this, R.string.service_error);
                     break;
             }
         }
@@ -67,7 +102,7 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
         register_button = findViewById(R.id.register_button);
         et_email_register = findViewById(R.id.et_email_register);
 
-        mTextWatcher = new MyTextWatcher(et_username_register, MyTextWatcher.TYPE_USERNAME);
+//        mTextWatcher = new MyTextWatcher(et_username_register, MyTextWatcher.TYPE_USERNAME);
     }
 
     private void setListener(){
@@ -76,10 +111,15 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
 
     @SuppressLint("StaticFieldLeak")
     private void register(final String userName, final String phoneNum, final String password, final String emailAddress){
+        Log.e(TAG, "register: ----------------");
+        Message startMsg = mHandler.obtainMessage(REGISTER_STARTED);
+        mHandler.sendMessage(startMsg);
         new AsyncTask<Void, Void, Void>() {
             String json = null;
             @Override
             protected Void doInBackground(Void... voids) {
+                Log.e(TAG, "register: url = " + ConstantPool.REGISTER +
+                        "?type=1&phoneNumber=" + phoneNum + "&nickName=" + userName + "&password=" + password + "&email=" + emailAddress);
                 Response response = HttpUtils.getInstance().request(ConstantPool.REGISTER +
                         "?type=1&phoneNumber=" + phoneNum + "&nickName=" + userName + "&password=" + password + "&email=" + emailAddress);
                 try {
@@ -89,6 +129,8 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "doInBackground:register e = " + e);
+                    Message msg = mHandler.obtainMessage(NET_ERROR);
+                    mHandler.sendMessage(msg);
                     e.printStackTrace();
                 }
                 return null;
@@ -97,17 +139,22 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
             @Override
             protected void onPostExecute(Void aVoid) {
                 if (!TextUtils.isEmpty(json)) {
+                    Log.e(TAG, "onPostExecute: !TextUtils.isEmpty(json)");
                     try {
                         JSONObject obj = new JSONObject(json);
                         String message = obj.optString("message");
                         if (message.contains("已注册")) {
+                            Log.e(TAG, "onPostExecute: REGISTER_FAILED");
                             Message msg = mHandler.obtainMessage(REGISTER_FAILED);
                             mHandler.sendMessage(msg);
                         }
                     } catch (JSONException e) {
+                        Message msg = mHandler.obtainMessage(SERVICE_ERROR);
+                        mHandler.sendMessage(msg);
                         e.printStackTrace();
                     }
                 } else {
+                    Log.e(TAG, "onPostExecute: REGISTER_SUCCESS");
                     Message msg = mHandler.obtainMessage(REGISTER_SUCCESS);
                     mHandler.sendMessage(msg);
                 }
@@ -129,9 +176,9 @@ public class RegisterActivity extends Activity implements View.OnClickListener{
                     ToastUtil.show(getApplicationContext(),R.string.register_params_error);
                     return;
                 }
-                if (mTextWatcher.judgeText() < 0) {
-                    return;
-                }
+//                if (mTextWatcher.judgeText() < 0) {
+//                    return;
+//                }
                 if (!isMobile(mobile)) {
                     ToastUtil.show(getApplicationContext(),R.string.login_params_error);
                     return;

@@ -12,11 +12,7 @@ import android.view.View;
 import android.widget.Button;
 
 import android.widget.EditText;
-import com.administrator.seawindow.utils.ConstantPool;
-import com.administrator.seawindow.utils.HttpUtils;
-import com.administrator.seawindow.utils.OpenActivityUtil;
-import com.administrator.seawindow.utils.PreferenceUtil;
-import com.administrator.seawindow.utils.ToastUtil;
+import com.administrator.seawindow.utils.*;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,6 +26,7 @@ public class LoginActivity extends Activity implements View.OnClickListener{
     private static final String TAG = "LoginActivity";
     private EditText mobile_text, password_text;
     private Button login_button, bt_login_register;
+    private DialogUtil dialogUtil;
     private String nickName;
     private String phoneNum;
     private String password;
@@ -38,6 +35,9 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 
     private final int LOGIN_SUCCESS = 0;
     private final int LOGIN_FAILED = 1;
+    private final int LOGIN_START = 2;
+    private final int NET_ERROR = 3;
+    private final int SERVICE_ERROR = 4;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler(){
@@ -45,6 +45,11 @@ public class LoginActivity extends Activity implements View.OnClickListener{
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case LOGIN_SUCCESS:
+                    if (dialogUtil != null) {
+                        if (dialogUtil.isDialogShowing()) {
+                            dialogUtil.dismissDialog();
+                        }
+                    }
                     ToastUtil.show(LoginActivity.this, "登录成功");
                     PreferenceUtil.setLOGINSTATE(LoginActivity.this, id);
                     HashMap<String,String> userInfo = new HashMap<>();
@@ -57,7 +62,36 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                     finish();
                     break;
                 case LOGIN_FAILED:
+                    if (dialogUtil != null) {
+                        if (dialogUtil.isDialogShowing()) {
+                            dialogUtil.dismissDialog();
+                        }
+                    }
                     ToastUtil.show(LoginActivity.this, "登录失败！请检查用户名和密码！");
+                    break;
+                case LOGIN_START:
+                    if (dialogUtil == null) {
+                        dialogUtil = new DialogUtil(LoginActivity.this, null, false);
+                    }
+                    if (!dialogUtil.isDialogShowing()) {
+                        dialogUtil.showDialog();
+                    }
+                    break;
+                case NET_ERROR:
+                    if (dialogUtil != null) {
+                        if (dialogUtil.isDialogShowing()) {
+                            dialogUtil.dismissDialog();
+                        }
+                    }
+                    ToastUtil.show(LoginActivity.this, R.string.login_net_error);
+                    break;
+                case SERVICE_ERROR:
+                    if (dialogUtil != null) {
+                        if (dialogUtil.isDialogShowing()) {
+                            dialogUtil.dismissDialog();
+                        }
+                    }
+                    ToastUtil.show(LoginActivity.this, R.string.service_error);
                     break;
             }
         }
@@ -123,6 +157,8 @@ public class LoginActivity extends Activity implements View.OnClickListener{
 
     @SuppressLint("StaticFieldLeak")
     private void login(final String mobile, final String password){
+        Message msg = mHandler.obtainMessage(LOGIN_START);
+        mHandler.sendMessage(msg);
         new AsyncTask<Void, Void, Void>() {
             String json = null;
             @Override
@@ -137,6 +173,8 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                         Log.e(TAG, "doInBackground:login json = " + json);
                     }
                 } catch (IOException e) {
+                    Message msg = mHandler.obtainMessage(NET_ERROR);
+                    mHandler.sendMessage(msg);
                     e.printStackTrace();
                 }
                 return null;
@@ -156,13 +194,18 @@ public class LoginActivity extends Activity implements View.OnClickListener{
                             phoneNum = obj1.optString("phoneNumber");
                             id = obj1.optInt("uid");
                             email = obj1.optString("email");
+
+                            Message msg = mHandler.obtainMessage(LOGIN_SUCCESS);
+                            mHandler.sendMessage(msg);
                         } catch (JSONException e) {
+                            Message msg = mHandler.obtainMessage(SERVICE_ERROR);
+                            mHandler.sendMessage(msg);
                             e.printStackTrace();
                         }
-
-                        Message msg = mHandler.obtainMessage(LOGIN_SUCCESS);
-                        mHandler.sendMessage(msg);
                     }
+                } else {
+                    Message msg = mHandler.obtainMessage(SERVICE_ERROR);
+                    mHandler.sendMessage(msg);
                 }
             }
         }.execute();

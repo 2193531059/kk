@@ -59,7 +59,7 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
     private EditText comment_input;
     private RelativeLayout rl_comment_input;
     private Button comment_send;
-    private MyTextWatcher myTextWatcher;
+//    private MyTextWatcher myTextWatcher;
     private CommentListAdapter mAdapter;
     private List<CommentBean> mList;
     private String imageNews;
@@ -141,7 +141,7 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
         comment_input = findViewById(R.id.comment_content);
         rl_comment_input = findViewById(R.id.rl_comment_input);
         comment_send = findViewById(R.id.comment_send);
-        myTextWatcher = new MyTextWatcher(comment_input, 0);
+//        myTextWatcher = new MyTextWatcher(comment_input, 0);
         mAdapter = new CommentListAdapter(mList, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(OrientationHelper.VERTICAL);
@@ -183,10 +183,10 @@ public class SeaHotSpotInfoActivity extends Activity implements View.OnClickList
                 break;
             case R.id.comment_send:
                 rl_comment_input.setVisibility(View.GONE);
-                if (myTextWatcher.judgeText() >= 0) {
+//                if (myTextWatcher.judgeText() >= 0) {
                     String comments = comment_input.getText().toString();
                     sendComment(comments);
-                }
+//                }
                 break;
         }
     }

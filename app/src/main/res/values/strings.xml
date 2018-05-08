@@ -19,6 +19,7 @@
     <string name="login_params_error">手机号码格式错误</string>
     <string name="login_email_error">邮箱格式错误</string>
     <string name="login_net_error">网络错误</string>
+    <string name="service_error">服务器错误</string>
     <string name="register">注册</string>
     <string name="name_hint">请输入昵称</string>
     <string name="confirm_password_hint">请确认密码</string>
